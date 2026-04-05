@@ -1,0 +1,1020 @@
+ /* 
+       CSS Xüsusiyyətləri
+       :root — bütün sənəd üçün dəyişənlər
+    */
+    :root {
+      --navy:       #0B1629;           /* Ən tünd göy — əsas fon rəngi */
+      --navy-mid:   #112240;           /* Orta tünd göy — bölmə fonları */
+      --navy-light: #1A3460;           /* Açıq göy — vurğu elementləri */
+      --navy-card:  #162038;           /* Kart fonu — kartlar üçün */
+      --gold:       #C9A84C;           /* Qızılı — əsas vurğu rəngi */
+      --gold-light: #E8C97A;           /* Açıq qızılı — hover effektlər */
+      --gold-dim:   rgba(201,168,76,0.15); /* Şəffaf qızılı — arxa plan */
+      --white:      #F4F1E8;           /* Krem-ağ — əsas mətn rəngi */
+      --white-dim:  rgba(244,241,232,0.6); /* Yarı-şəffaf ağ — ikinci dərəcəli mətn */
+      --white-faint:rgba(244,241,232,0.08);/* Çox şəffaf ağ — hover, input fonu */
+      --border:     rgba(201,168,76,0.2);  /* Qızılı kənar xətt */
+      --border-soft:rgba(244,241,232,0.1); /* Yumşaq ağ kənar xətt */
+    }
+
+    /* box-sizing: border-box — padding eni/hündürlüyə daxil olur */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Body-Əsas sənəd stili */
+    body {
+      font-family: 'DM Sans', sans-serif; /* Əsas şrift */
+      background: var(--navy);            /* Tünd göy fon */
+      color: var(--white);                /* Krem-ağ mətn */
+      overflow-x: hidden;                 /* Üfüqi sürüşməni bağla */
+    }
+
+    /* Bütün düymələr üçün ümumi stil */
+    button { cursor: pointer; font-family: 'DM Sans', sans-serif; border: none; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Naviqasiya çubuğu*/
+    .nav {
+      display: flex;                        /* Elementləri bir sırada yerləşdir */
+      align-items: center;                  /* Şaquli mərkəzlə */
+      justify-content: space-between;       /* Sol-orta-sağ paylaşdır */
+      padding: 18px 60px;                   /* İçəridən boşluq */
+      background: rgba(11,22,41,0.96);      /* 96% qeyri-şəffaf tünd göy */
+      backdrop-filter: blur(16px);          /* Arxasını bulanıqlaşdır */
+      position: sticky;                     /* Sürüşdükcə ekranda qalsın */
+      top: 0;                               /* Yuxarıya yapışsın */
+      z-index: 100;                         /* Digər elementlərin üstündə olsun */
+      border-bottom: 1px solid var(--border); /* Alt kənar xətti */
+    }
+
+    /* Logo stili — "Cine" ağ, "Vault" qızılı görünür */
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: var(--white);
+    }
+    .logo span { color: var(--gold); } /* "Vault" hissəsi qızılı */
+
+    /* Nav linkləri */
+    .nav-links { display: flex; align-items: center; gap: 30px; }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white-dim);         
+      transition: color 0.2s;          
+      letter-spacing: 0.3px;
+    }
+    .nav-links a:hover { color: var(--gold-light); } /* Hover — qızılıya çevrilir */
+
+    /* Nav-dakı "Daxil ol" düyməsi */
+    .nav-btn {
+      padding: 10px 26px;
+      background: var(--gold);           
+      color: var(--navy);                
+      border-radius: 6px;                /* Kənarları yumşaldır */
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-btn:hover { background: var(--gold-light); transform: translateY(-1px); } /* Hover: yuxarı qalxır */
+
+    /* HERO BÖLMƏSİ — Səhifənin əsas tanıtım hissəsi */
+    .hero {
+      text-align: center;
+      padding: 90px 40px 70px;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(17,34,64,0.6) 0%, transparent 100%);
+      position: relative; /* ::before pseudo-element üçün lazım */
+    }
+
+    /* Hero arxa planının görüşünü */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0; /* top/right/bottom/left = 0 */
+      background-image:
+        radial-gradient(circle at 20% 80%, rgba(201,168,76,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(201,168,76,0.05) 0%, transparent 50%);
+      pointer-events: none; /* Klik keçirmir, yalnız bəzəkdir */
+    }
+
+    /* "İndi Yayımlanır" hissəsi */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold-dim);       
+      border: 1px solid var(--border);
+      border-radius: 999px;              
+      padding: 6px 18px;
+      font-size: 11px;
+      color: var(--gold-light);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    /* Yanıb-sönən nöqtə — "canlı" göstərmək üçün animasiya */
+    .dot {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite; /* Sonsuz davam edir */
+    }
+    /* pulse animasiyası: tam görünür → solur → yenidən görünür */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* Hero başlığı */
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 22px;
+      letter-spacing: -1px;
+    }
+    .hero h1 em {
+      color: var(--gold);    /* "Təcrübəsi" sözü qızılı */
+      font-style: italic;    /* İtalik yazı */
+    }
+
+    /* Hero alt mətni */
+    .hero p {
+      font-size: 16px;
+      color: var(--white-dim);
+      line-height: 1.75;    /* Sətir aralığı */
+      max-width: 480px;     /* Çox geniş olmasın */
+      margin: 0 auto 40px;  /* Mərkəzlə */
+    }
+
+    /* Hero düymələri */
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* Əsas düymə yəni pulsuz qeydiyyat düyməsi */
+    .btn-primary {
+      padding: 14px 36px;
+      background: var(--gold);
+      color: var(--navy);
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);                  
+      box-shadow: 0 10px 28px rgba(201,168,76,0.3); 
+    }
+
+    /* İkinci düymə yəni daxil ol düyməsi */
+    .btn-outline {
+      padding: 14px 36px;
+      background: transparent;           /* Şəffaf fon */
+      color: var(--white-dim);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold-light); }
+
+    /* Hero statistika sırası */
+    .stats {
+      display: flex;
+      gap: 50px;
+      justify-content: center;
+      margin-top: 60px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border-soft); /* Üst xətt */
+      flex-wrap: wrap;
+    }
+    /* Statistika rəqəmləri */
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .stat-label { font-size: 12px; color: var(--white-dim); margin-top: 4px; letter-spacing: 0.5px; }
+
+    /* Kino zalları bölməsi */
+    .halls-section {
+      padding: 60px 60px;
+      background: var(--navy-mid);
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    /* Bölmə başlıqları üçün ümumi stil */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--white);
+    }
+    .section-title span { color: var(--gold); } 
+
+    /* Zal kartlarının şəbəkəsi */
+    .halls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    /* Tək zal kartı */
+    .hall-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: default; /* Kursor dəyişmir (kliklenmir) */
+    }
+    .hall-card:hover { transform: translateY(-4px); border-color: var(--gold); } /* Hover: yuxarı qalxır, kənar qızılı */
+
+    .hall-icon { font-size: 28px; margin-bottom: 12px; }
+    .hall-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .hall-type { font-size: 12px; color: var(--gold); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+    .hall-desc { font-size: 13px; color: var(--white-dim); line-height: 1.6; }
+    .hall-seats { margin-top: 14px; font-size: 12px; color: var(--white-dim); display: flex; align-items: center; gap: 6px; }
+    .hall-seats strong { color: var(--gold-light); }
+
+    /* FİLM BÖLMƏLƏRİ */
+    .section { padding: 50px 60px; }
+
+    /* Bölmə başlığı + "Hamısı →" linki yan-yana */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .see-all { font-size: 13px; color: var(--gold); font-weight: 600; transition: color 0.2s; }
+    .see-all:hover { color: var(--gold-light); text-decoration: underline; }
+
+    /* Filmlər sırası — üfüqi sürüşmə (scroll):
+       overflow-x: auto — sağa-sola sürüşdürmə
+       cursor: grab — sürüklemek üçün əl kursoru */
+    .film-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      scrollbar-width: thin;                   
+      scrollbar-color: var(--border) transparent;
+      cursor: grab;
+    }
+    .film-row:active { cursor: grabbing; }      
+    /* WebKit (Chrome/Safari) üçün scroll çubuğu stili */
+    .film-row::-webkit-scrollbar { height: 3px; }
+    .film-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* FİLM KARTI */
+    .film-card {
+      flex-shrink: 0;
+      width: 158px;
+      background: var(--navy-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      overflow: hidden;                
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      user-select: none;              
+    }
+    .film-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      border-color: var(--gold);
+    }
+
+    /* Poster sahəsi */
+    .poster {
+      height: 224px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Poster rəng variantları -Hər film üçün fərqli gradient rəng seçilir (JS-dən class ilə) */
+    .poster.navy-1   { background: linear-gradient(155deg, #060F1E, #0E2244, #1A3A7A); }
+    .poster.navy-2   { background: linear-gradient(155deg, #06111F, #0B2030, #173360); }
+    .poster.navy-3   { background: linear-gradient(155deg, #081520, #123355, #1C558A); }
+    .poster.gold-1   { background: linear-gradient(155deg, #1A1005, #3A2808, #6B4A10); }
+    .poster.gold-2   { background: linear-gradient(155deg, #120E04, #2E2006, #5A3A0A); }
+    .poster.teal     { background: linear-gradient(155deg, #061418, #0A2A30, #104555); }
+    .poster.indigo   { background: linear-gradient(155deg, #0A0A1E, #161640, #222270); }
+    .poster.slate    { background: linear-gradient(155deg, #0E1218, #1A2030, #283048); }
+
+    /* Poster üzərindəki film adı */
+    .poster-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(244,241,232,0.85);
+      text-align: center;
+      padding: 10px;
+      line-height: 1.3;
+      position: relative;
+      z-index: 1; /* Arxasındakı dairədən önə çıxsın */
+    }
+
+    /* Posterin yuxarısında bəzək */
+    .poster::before {
+      content: '';
+      position: absolute;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.06);
+      top: -15px; right: -15px;
+    }
+
+    /* "YENİ" etiketi */
+    .badge-new {
+      position: absolute;
+      top: 8px; left: 8px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Reytinq etiketi */
+    .badge-rating {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: rgba(11,22,41,0.85);
+      backdrop-filter: blur(4px);
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+    }
+
+    /* Kartın alt məlumat hissəsi */
+    .card-info { padding: 12px 13px 13px; }
+    /* Uzun adı üç nöqtə ilə kəs */
+    .card-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-genre { font-size: 11px; color: var(--white-dim); margin-top: 3px; }
+    .card-year  { font-size: 11px; color: var(--white-dim); margin-top: 2px; }
+
+    /* Önə çıxan film hissəi */
+    .featured {
+      margin: 10px 60px 20px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #081526, #0E2448, #162F60);
+      border: 1px solid var(--border);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Sağ-yuxarı küncün bəzəyi */
+    .featured::after {
+      content: '';
+      position: absolute;
+      right: -80px; top: -80px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.06);
+    }
+
+    /* Sol-aşağı küncün bəzəyi */
+    .featured::before {
+      content: '';
+      position: absolute;
+      left: -40px; bottom: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.04);
+    }
+
+    .featured-text { flex: 1; position: relative; z-index: 1; }
+    .featured-brand {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .featured-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .featured-text p { font-size: 14px; color: var(--white-dim); line-height: 1.65; max-width: 430px; margin-bottom: 24px; }
+
+    /* Film metadatası — kiçik etiketlər sırası */
+    .featured-meta { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+    .meta-tag {
+      padding: 5px 13px;
+      background: var(--white-faint);
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;          /* Tam dairəvi pill forması */
+      font-size: 12px;
+      color: var(--white-dim);
+    }
+
+    /* Xüsusiyyət bannerdəki miniatür poster */
+    .featured-poster {
+      width: 180px;
+      height: 260px;
+      border-radius: 10px;
+      background: linear-gradient(155deg, #060F20, #0E2244, #1A4480);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      /* İkiqat kölgə: böyük yayılmış + kənar xətti simulyasiya */
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+    }
+    .featured-poster span {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(201,168,76,0.8);
+      text-align: center;
+      padding: 12px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    /* XÜSUSİYYƏTLƏR */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      padding: 20px 60px 60px;
+    }
+
+    /* Xüsusiyyət kartı */
+    .feat-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 26px 22px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feat-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+    .feat-icon { font-size: 26px; margin-bottom: 12px; display: block; }
+    .feat-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 7px; color: var(--white); }
+    .feat-card p { font-size: 13px; color: var(--white-dim); line-height: 1.6; }
+
+    /* HAQQINDA BÖLMƏSİ */
+    .about-section {
+      padding: 70px 60px;
+      background: var(--navy-mid);
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* 50% - 50% bölünmə */
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+    .about-text h2 span { color: var(--gold); }
+    .about-text p { font-size: 14px; color: var(--white-dim); line-height: 1.75; margin-bottom: 14px; }
+
+    /* Statistika kartları */
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .about-stat-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .about-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .about-stat-label { font-size: 12px; color: var(--white-dim); margin-top: 4px; }
+
+    /* GİRİŞ/QEYDİYYAT pəncərəsi */
+    .modal-backdrop {
+      display: none;                          /* Default: gizli */
+      position: fixed;
+      inset: 0;                               /* Bütün ekranı örtür */
+      background: rgba(6,12,24,0.92);         /* Tünd yarı-şəffaf örtük */
+      backdrop-filter: blur(10px);
+      z-index: 500;                           /* Hər şeyin üstündə */
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }   /* JS "open" class əlavə edəndə görünür */
+
+    /* Pəncərə qutusu */
+    .modal {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 34px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      animation: slide-in 0.25s ease; /* Açılma animasiyası */
+    }
+    /* Modal açılma animasiyası — aşağıdan yuxarı sürüşür, böyüyür */
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateY(18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Modal bağlama "X" düyməsi */
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 30px; height: 30px;
+      background: var(--white-faint);
+      border-radius: 50%;
+      color: var(--white-dim);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: var(--gold); color: var(--navy); }
+
+    /* Modal yuxarısında logo */
+    .modal-logo { text-align: center; margin-bottom: 24px; }
+    .modal-logo .logo { font-size: 22px; }
+    .modal-logo p { font-size: 13px; color: var(--white-dim); margin-top: 4px; }
+
+    /* Giriş/Qeydiyyat tab düymələri */
+    .tab-group {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+    .tab {
+      flex: 1;                    
+      padding: 9px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white-dim);
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .tab.active { background: var(--gold); color: var(--navy); } /* Aktiv tab qızılı */
+
+    /* Forma */
+    .form { display: none; flex-direction: column; gap: 14px; }
+    .form.active { display: flex; }
+
+    /* Forma sahəsi */
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--white-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 5px;
+    }
+    .field input {
+      width: 100%;
+      padding: 11px 13px;
+      background: var(--white-faint);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 7px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;               
+      transition: border-color 0.2s, background 0.2s;
+    }
+    /* Fokus — aktiv input qızılı kənarlı olur */
+    .field input:focus {
+      border-color: var(--gold);
+      background: var(--gold-dim);
+    }
+    .field input::placeholder { color: rgba(244,241,232,0.25); }
+
+    /* 2 sütunlu sıra — ad/soyad üçün */
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Tam genişlikli düymə */
+    .btn-full {
+      width: 100%;
+      padding: 13px;
+      background: var(--gold);
+      color: var(--navy);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: background 0.2s, transform 0.15s;
+    }
+    /* :not(:disabled) — yalnız aktiv düymə hover alır */
+    .btn-full:hover:not(:disabled) { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-full:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Xəta mesajı qutusu */
+    .error-box {
+      display: none;                         
+      background: rgba(200,60,60,0.12);
+      border: 1px solid rgba(200,60,60,0.3);
+      border-radius: 7px;
+      padding: 9px 13px;
+      font-size: 13px;
+      color: #FF9090;                         
+    }
+    .error-box.show { display: block; }     
+
+    /* "Hesabın yoxdur?" mətn linki */
+    .switch-text { text-align: center; font-size: 13px; color: var(--white-dim); }
+    .switch-text a { color: var(--gold); font-weight: 600; cursor: pointer; }
+
+    /* Ayırıcı xətt — "ya da" mətni ilə */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--white-dim);
+    }
+    /* ::before və ::after — sol və sağ xəttlər */
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;           /* Qalan genişliyi bərabər bölür */
+      height: 1px;
+      background: var(--border-soft);
+    }
+
+    /* Sosial giriş düymələri sırası */
+    .social-row { display: flex; gap: 10px; }
+    .social-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--white-faint);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 8px;
+      color: var(--white-dim);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .social-btn:hover { border-color: var(--gold); color: var(--gold-light); }
+    .social-btn svg { width: 15px; height: 15px; }
+
+    /* BİLET MODALI */
+    .ticket-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(6,12,24,0.95);
+      backdrop-filter: blur(12px);
+      z-index: 600;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ticket-modal.open { display: flex; }
+
+    /* Bilet panelinin qutusu */
+    .ticket-panel {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 540px;
+      padding: 30px;
+      position: relative;
+      animation: slide-in 0.25s ease;
+      max-height: 90vh;    /* Ekrandan daşmasın */
+      overflow-y: auto;    /* Uzun olsa sürüşdür */
+    }
+
+    /* Filmin kiçik məlumat sırası — poster + ad + janr + reytinq */
+    .ticket-film-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    /* Kiçik poster — film rəngini götürür */
+    .ticket-mini-poster {
+      width: 58px; height: 80px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 10px;
+      color: var(--gold);
+      text-align: center;
+      padding: 4px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .ticket-film-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .ticket-film-genre { font-size: 12px; color: var(--white-dim); margin-top: 3px; }
+    .ticket-film-rating { font-size: 13px; color: var(--gold-light); margin-top: 4px; font-weight: 600; }
+
+    /* Kiçik başlıq etiketi — "Seans Vaxtı Seçin" kimi */
+    .sub-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--white-dim);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Seans vaxtı düymələri sırası */
+    .showtime-row { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 22px; }
+    .showtime-btn {
+      padding: 7px 16px;
+      background: var(--white-faint);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 6px;
+      color: var(--white-dim);
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    /* Hover və seçilmiş — eyni görünüş */
+    .showtime-btn:hover, .showtime-btn.selected {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    /* "EKRAN" yazısı — kino ekranı simulyasiyası */
+    .screen-label {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--white-dim);
+      background: linear-gradient(180deg, rgba(201,168,76,0.15), transparent);
+      border-radius: 6px 6px 0 0;
+      padding: 7px;
+      margin-bottom: 12px;
+    }
+
+    /* Oturacaq şəbəkəsi — sütunlar mərkəzdə */
+    .seat-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    /* Bir cərgə oturacaqlar */
+    .seat-row { display: flex; gap: 4px; }
+
+    /* Tək oturacaq */
+    .seat {
+      width: 25px; height: 19px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    /* Boş oturacaq */
+    .seat.empty   { background: rgba(244,241,232,0.08); border-color: rgba(244,241,232,0.12); }
+    .seat.empty:hover { background: var(--gold-dim); border-color: var(--gold); }
+    /* Seçilmiş oturacaq — qızılı */
+    .seat.picked  { background: var(--gold); box-shadow: 0 2px 8px rgba(201,168,76,0.35); }
+    /* Dolu oturacaq — klik olmur */
+    .seat.taken   { background: rgba(244,241,232,0.04); border-color: rgba(244,241,232,0.04); cursor: not-allowed; }
+
+    /* Rəng izahı (legenda) */
+    .seat-legend { display: flex; gap: 18px; justify-content: center; margin-bottom: 18px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--white-dim); }
+    .legend-color { width: 15px; height: 11px; border-radius: 2px; }
+
+    /* Ödəniş cəm sahəsi — qiymət + düymə yan-yana */
+    .payment-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--white-faint);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+    }
+    .total-label { font-size: 13px; color: var(--white-dim); }
+    .total-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-top: 2px;
+    }
+    /* "Bilet Al" düyməsi */
+    .buy-btn {
+      padding: 12px 24px;
+      background: var(--gold);
+      color: var(--navy);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .buy-btn:hover:not(:disabled) { background: var(--gold-light); transform: scale(1.03); }
+    .buy-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* DASHBOARD — yalnız daxil olunduqda görünür */
+    #dashboard { display: none; }
+    #dashboard.open { display: block; }
+    #landing.hidden { display: none; }
+
+    /* Nav-dakı istifadəçi adı + çıxış düyməsi */
+    .nav-user { display: flex; align-items: center; gap: 12px; }
+    .user-name { font-size: 14px; font-weight: 600; }
+    .logout-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 6px;
+      color: var(--white-dim);
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* Xoş gəldiniz banneri — dashboard üstü */
+    .welcome-banner {
+      padding: 36px 60px;
+      background: linear-gradient(135deg, var(--gold-dim), transparent);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .welcome-banner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .welcome-banner h2 span { color: var(--gold); } /* İstifadəçi adı qızılı */
+    .welcome-banner p { color: var(--white-dim); font-size: 14px; }
+
+    /* ƏLAQƏ FORMASI BÖLMƏSİ */
+    .contact-section {
+      padding: 70px 60px;
+      border-top: 1px solid var(--border-soft);
+    }
+    .contact-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .contact-section h2 span { color: var(--gold); }
+    .contact-section > p { color: var(--white-dim); font-size: 14px; margin-bottom: 30px; }
+
+    /* Sol: forma, Sağ: əlaqə məlumatları */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .contact-form { display: flex; flex-direction: column; gap: 14px; }
+
+    /* Çox sətirli mətn sahəsi */
+    .contact-textarea {
+      width: 100%;
+      padding: 11px 13px;
+      background: var(--white-faint);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 7px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      resize: vertical;          /* Yalnız şaquli ölçü dəyişdirilə bilər */
+      min-height: 100px;
+      transition: border-color 0.2s;
+    }
+    .contact-textarea:focus { border-color: var(--gold); }
+    .contact-textarea::placeholder { color: rgba(244,241,232,0.25); }
+
+    /* Əlaqə məlumatları (ünvan, telefon, e-poçt) */
+    .contact-info { display: flex; flex-direction: column; gap: 20px; }
+    .contact-info-item { display: flex; align-items: flex-start; gap: 14px; }
+    .contact-info-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .contact-info-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .contact-info-text p { font-size: 13px; color: var(--white-dim); line-height: 1.5; }
+
+    /* TOAST BİLDİRİŞİ — ekranın altında çıxan qısa mesaj */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(14px); /* Mərkəz + gizli vəziyyət */
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 22px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+      opacity: 0;                    /* Gizli */
+      transition: all 0.3s;
+      z-index: 999;
+      pointer-events: none;
+      white-space: nowrap;           /* Mətn bir sətirdə qalsın */
+      box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+    }
+    /* show class əlavə olunanda görünür */
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* FOOTER yəni səhifənin alt hissəsi*/
+    footer {
+      border-top: 1px solid var(--border-soft);
+      padding: 36px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;           /* Kiçik ekranda alta keçir */
+      gap: 18px;
+      background: var(--navy-mid);
+    }
+    .footer-logo .logo { font-size: 20px; }
+    .footer-logo p { font-size: 12px; color: var(--white-dim); margin-top: 4px; }
+    .footer-links { display: flex; gap: 22px; }
+    .footer-links a { font-size: 13px; color: var(--white-dim); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold-light); }
+    .footer-right { font-size: 12px; color: var(--white-dim); }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      /* Bütün bölmələrdə yan paddingi azalt */
+      .nav, .section, .features, .welcome-banner, .halls-section, .about-section, .contact-section, footer {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      .nav-links { display: none; }          /* Nav linkləri mobilde gizlən */
+      .featured { margin: 10px 20px; padding: 26px 22px; flex-direction: column; } /* Banneri şaquli düz */
+      .featured-poster { width: 130px; height: 190px; }  /* Posteru kiçilt */
+      .about-grid { grid-template-columns: 1fr; gap: 30px; }    /* Haqqında: 1 sütun */
+      .contact-grid { grid-template-columns: 1fr; }             /* Əlaqə: 1 sütun */
+      .hero h1 { font-size: 52px; }          /* Başlığı kiçilt */
+      .stats { gap: 24px; }                  /* Statistika aralığını azalt */
+    }

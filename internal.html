@@ -1,0 +1,2101 @@
+<!DOCTYPE html>
+<html lang="az">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CineVault — Kino Bilet Platforması</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+  
+  <!-- Xarici CSS -->
+  <link rel="stylesheet" href="external.css">
+  
+  <!-- Daxili CSS -->
+  <!--
+  <style>
+    /* 
+       CSS Xüsusiyyətləri
+       :root — bütün sənəd üçün dəyişənlər
+    */
+    :root {
+      --navy:       #0B1629;           /* Ən tünd göy — əsas fon rəngi */
+      --navy-mid:   #112240;           /* Orta tünd göy — bölmə fonları */
+      --navy-light: #1A3460;           /* Açıq göy — vurğu elementləri */
+      --navy-card:  #162038;           /* Kart fonu — kartlar üçün */
+      --gold:       #C9A84C;           /* Qızılı — əsas vurğu rəngi */
+      --gold-light: #E8C97A;           /* Açıq qızılı — hover effektlər */
+      --gold-dim:   rgba(201,168,76,0.15); /* Şəffaf qızılı — arxa plan */
+      --white:      #F4F1E8;           /* Krem-ağ — əsas mətn rəngi */
+      --white-dim:  rgba(244,241,232,0.6); /* Yarı-şəffaf ağ — ikinci dərəcəli mətn */
+      --white-faint:rgba(244,241,232,0.08);/* Çox şəffaf ağ — hover, input fonu */
+      --border:     rgba(201,168,76,0.2);  /* Qızılı kənar xətt */
+      --border-soft:rgba(244,241,232,0.1); /* Yumşaq ağ kənar xətt */
+    }
+
+    /* box-sizing: border-box — padding eni/hündürlüyə daxil olur */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    /* Body-Əsas sənəd stili */
+    body {
+      font-family: 'DM Sans', sans-serif; /* Əsas şrift */
+      background: var(--navy);            /* Tünd göy fon */
+      color: var(--white);                /* Krem-ağ mətn */
+      overflow-x: hidden;                 /* Üfüqi sürüşməni bağla */
+    }
+
+    /* Bütün düymələr üçün ümumi stil */
+    button { cursor: pointer; font-family: 'DM Sans', sans-serif; border: none; }
+    a { text-decoration: none; color: inherit; }
+
+    /* Naviqasiya çubuğu*/
+    .nav {
+      display: flex;                        /* Elementləri bir sırada yerləşdir */
+      align-items: center;                  /* Şaquli mərkəzlə */
+      justify-content: space-between;       /* Sol-orta-sağ paylaşdır */
+      padding: 18px 60px;                   /* İçəridən boşluq */
+      background: rgba(11,22,41,0.96);      /* 96% qeyri-şəffaf tünd göy */
+      backdrop-filter: blur(16px);          /* Arxasını bulanıqlaşdır */
+      position: sticky;                     /* Sürüşdükcə ekranda qalsın */
+      top: 0;                               /* Yuxarıya yapışsın */
+      z-index: 100;                         /* Digər elementlərin üstündə olsun */
+      border-bottom: 1px solid var(--border); /* Alt kənar xətti */
+    }
+
+    /* Logo stili — "Cine" ağ, "Vault" qızılı görünür */
+    .logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      color: var(--white);
+    }
+    .logo span { color: var(--gold); } /* "Vault" hissəsi qızılı */
+
+    /* Nav linkləri */
+    .nav-links { display: flex; align-items: center; gap: 30px; }
+    .nav-links a {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white-dim);         
+      transition: color 0.2s;          
+      letter-spacing: 0.3px;
+    }
+    .nav-links a:hover { color: var(--gold-light); } /* Hover — qızılıya çevrilir */
+
+    /* Nav-dakı "Daxil ol" düyməsi */
+    .nav-btn {
+      padding: 10px 26px;
+      background: var(--gold);           
+      color: var(--navy);                
+      border-radius: 6px;                /* Kənarları yumşaldır */
+      font-weight: 600;
+      font-size: 14px;
+      letter-spacing: 0.3px;
+      transition: background 0.2s, transform 0.15s;
+    }
+    .nav-btn:hover { background: var(--gold-light); transform: translateY(-1px); } /* Hover: yuxarı qalxır */
+
+    /* HERO BÖLMƏSİ — Səhifənin əsas tanıtım hissəsi */
+    .hero {
+      text-align: center;
+      padding: 90px 40px 70px;
+      background:
+        radial-gradient(ellipse 60% 40% at 50% 0%, rgba(201,168,76,0.1) 0%, transparent 70%),
+        linear-gradient(180deg, rgba(17,34,64,0.6) 0%, transparent 100%);
+      position: relative; /* ::before pseudo-element üçün lazım */
+    }
+
+    /* Hero arxa planının görüşünü */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0; /* top/right/bottom/left = 0 */
+      background-image:
+        radial-gradient(circle at 20% 80%, rgba(201,168,76,0.05) 0%, transparent 50%),
+        radial-gradient(circle at 80% 20%, rgba(201,168,76,0.05) 0%, transparent 50%);
+      pointer-events: none; /* Klik keçirmir, yalnız bəzəkdir */
+    }
+
+    /* "İndi Yayımlanır" hissəsi */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: var(--gold-dim);       
+      border: 1px solid var(--border);
+      border-radius: 999px;              
+      padding: 6px 18px;
+      font-size: 11px;
+      color: var(--gold-light);
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      margin-bottom: 28px;
+    }
+
+    /* Yanıb-sönən nöqtə — "canlı" göstərmək üçün animasiya */
+    .dot {
+      width: 6px; height: 6px;
+      background: var(--gold);
+      border-radius: 50%;
+      animation: pulse 1.5s ease-in-out infinite; /* Sonsuz davam edir */
+    }
+    /* pulse animasiyası: tam görünür → solur → yenidən görünür */
+    @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.2} }
+
+    /* Hero başlığı */
+    .hero h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(52px, 8vw, 96px);
+      font-weight: 900;
+      line-height: 1.05;
+      margin-bottom: 22px;
+      letter-spacing: -1px;
+    }
+    .hero h1 em {
+      color: var(--gold);    /* "Təcrübəsi" sözü qızılı */
+      font-style: italic;    /* İtalik yazı */
+    }
+
+    /* Hero alt mətni */
+    .hero p {
+      font-size: 16px;
+      color: var(--white-dim);
+      line-height: 1.75;    /* Sətir aralığı */
+      max-width: 480px;     /* Çox geniş olmasın */
+      margin: 0 auto 40px;  /* Mərkəzlə */
+    }
+
+    /* Hero düymələri */
+    .hero-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+    /* Əsas düymə yəni pulsuz qeydiyyat düyməsi */
+    .btn-primary {
+      padding: 14px 36px;
+      background: var(--gold);
+      color: var(--navy);
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+      transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    }
+    .btn-primary:hover {
+      background: var(--gold-light);
+      transform: translateY(-2px);                  
+      box-shadow: 0 10px 28px rgba(201,168,76,0.3); 
+    }
+
+    /* İkinci düymə yəni daxil ol düyməsi */
+    .btn-outline {
+      padding: 14px 36px;
+      background: transparent;           /* Şəffaf fon */
+      color: var(--white-dim);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 6px;
+      font-size: 15px;
+      font-weight: 500;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--gold); color: var(--gold-light); }
+
+    /* Hero statistika sırası */
+    .stats {
+      display: flex;
+      gap: 50px;
+      justify-content: center;
+      margin-top: 60px;
+      padding-top: 36px;
+      border-top: 1px solid var(--border-soft); /* Üst xətt */
+      flex-wrap: wrap;
+    }
+    /* Statistika rəqəmləri */
+    .stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .stat-label { font-size: 12px; color: var(--white-dim); margin-top: 4px; letter-spacing: 0.5px; }
+
+    /* Kino zalları bölməsi */
+    .halls-section {
+      padding: 60px 60px;
+      background: var(--navy-mid);
+      border-top: 1px solid var(--border-soft);
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    /* Bölmə başlıqları üçün ümumi stil */
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 30px;
+      color: var(--white);
+    }
+    .section-title span { color: var(--gold); } 
+
+    /* Zal kartlarının şəbəkəsi */
+    .halls-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    /* Tək zal kartı */
+    .hall-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      transition: transform 0.2s, border-color 0.2s;
+      cursor: default; /* Kursor dəyişmir (kliklenmir) */
+    }
+    .hall-card:hover { transform: translateY(-4px); border-color: var(--gold); } /* Hover: yuxarı qalxır, kənar qızılı */
+
+    .hall-icon { font-size: 28px; margin-bottom: 12px; }
+    .hall-name { font-family: 'Playfair Display', serif; font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .hall-type { font-size: 12px; color: var(--gold); font-weight: 600; letter-spacing: 1px; text-transform: uppercase; margin-bottom: 10px; }
+    .hall-desc { font-size: 13px; color: var(--white-dim); line-height: 1.6; }
+    .hall-seats { margin-top: 14px; font-size: 12px; color: var(--white-dim); display: flex; align-items: center; gap: 6px; }
+    .hall-seats strong { color: var(--gold-light); }
+
+    /* FİLM BÖLMƏLƏRİ */
+    .section { padding: 50px 60px; }
+
+    /* Bölmə başlığı + "Hamısı →" linki yan-yana */
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 22px;
+    }
+    .section-header h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 22px;
+      font-weight: 700;
+    }
+    .see-all { font-size: 13px; color: var(--gold); font-weight: 600; transition: color 0.2s; }
+    .see-all:hover { color: var(--gold-light); text-decoration: underline; }
+
+    /* Filmlər sırası — üfüqi sürüşmə (scroll):
+       overflow-x: auto — sağa-sola sürüşdürmə
+       cursor: grab — sürüklemek üçün əl kursoru */
+    .film-row {
+      display: flex;
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 10px;
+      scrollbar-width: thin;                   
+      scrollbar-color: var(--border) transparent;
+      cursor: grab;
+    }
+    .film-row:active { cursor: grabbing; }      
+    /* WebKit (Chrome/Safari) üçün scroll çubuğu stili */
+    .film-row::-webkit-scrollbar { height: 3px; }
+    .film-row::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    /* FİLM KARTI */
+    .film-card {
+      flex-shrink: 0;
+      width: 158px;
+      background: var(--navy-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      overflow: hidden;                
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+      user-select: none;              
+    }
+    .film-card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.5);
+      border-color: var(--gold);
+    }
+
+    /* Poster sahəsi */
+    .poster {
+      height: 224px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+    }
+
+    /* Poster rəng variantları -Hər film üçün fərqli gradient rəng seçilir (JS-dən class ilə) */
+    .poster.navy-1   { background: linear-gradient(155deg, #060F1E, #0E2244, #1A3A7A); }
+    .poster.navy-2   { background: linear-gradient(155deg, #06111F, #0B2030, #173360); }
+    .poster.navy-3   { background: linear-gradient(155deg, #081520, #123355, #1C558A); }
+    .poster.gold-1   { background: linear-gradient(155deg, #1A1005, #3A2808, #6B4A10); }
+    .poster.gold-2   { background: linear-gradient(155deg, #120E04, #2E2006, #5A3A0A); }
+    .poster.teal     { background: linear-gradient(155deg, #061418, #0A2A30, #104555); }
+    .poster.indigo   { background: linear-gradient(155deg, #0A0A1E, #161640, #222270); }
+    .poster.slate    { background: linear-gradient(155deg, #0E1218, #1A2030, #283048); }
+
+    /* Poster üzərindəki film adı */
+    .poster-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 15px;
+      font-weight: 700;
+      color: rgba(244,241,232,0.85);
+      text-align: center;
+      padding: 10px;
+      line-height: 1.3;
+      position: relative;
+      z-index: 1; /* Arxasındakı dairədən önə çıxsın */
+    }
+
+    /* Posterin yuxarısında bəzək */
+    .poster::before {
+      content: '';
+      position: absolute;
+      width: 100px; height: 100px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.06);
+      top: -15px; right: -15px;
+    }
+
+    /* "YENİ" etiketi */
+    .badge-new {
+      position: absolute;
+      top: 8px; left: 8px;
+      background: var(--gold);
+      color: var(--navy);
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    /* Reytinq etiketi */
+    .badge-rating {
+      position: absolute;
+      top: 8px; right: 8px;
+      background: rgba(11,22,41,0.85);
+      backdrop-filter: blur(4px);
+      color: var(--gold-light);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 7px;
+      border-radius: 4px;
+    }
+
+    /* Kartın alt məlumat hissəsi */
+    .card-info { padding: 12px 13px 13px; }
+    /* Uzun adı üç nöqtə ilə kəs */
+    .card-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .card-genre { font-size: 11px; color: var(--white-dim); margin-top: 3px; }
+    .card-year  { font-size: 11px; color: var(--white-dim); margin-top: 2px; }
+
+    /* Önə çıxan film hissəi */
+    .featured {
+      margin: 10px 60px 20px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #081526, #0E2448, #162F60);
+      border: 1px solid var(--border);
+      padding: 48px;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Sağ-yuxarı küncün bəzəyi */
+    .featured::after {
+      content: '';
+      position: absolute;
+      right: -80px; top: -80px;
+      width: 280px; height: 280px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.06);
+    }
+
+    /* Sol-aşağı küncün bəzəyi */
+    .featured::before {
+      content: '';
+      position: absolute;
+      left: -40px; bottom: -40px;
+      width: 200px; height: 200px;
+      border-radius: 50%;
+      background: rgba(201,168,76,0.04);
+    }
+
+    .featured-text { flex: 1; position: relative; z-index: 1; }
+    .featured-brand {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--gold);
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+    .featured-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 48px;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .featured-text p { font-size: 14px; color: var(--white-dim); line-height: 1.65; max-width: 430px; margin-bottom: 24px; }
+
+    /* Film metadatası — kiçik etiketlər sırası */
+    .featured-meta { display: flex; gap: 10px; margin-bottom: 24px; flex-wrap: wrap; }
+    .meta-tag {
+      padding: 5px 13px;
+      background: var(--white-faint);
+      border: 1px solid var(--border-soft);
+      border-radius: 999px;          /* Tam dairəvi pill forması */
+      font-size: 12px;
+      color: var(--white-dim);
+    }
+
+    /* Xüsusiyyət bannerdəki miniatür poster */
+    .featured-poster {
+      width: 180px;
+      height: 260px;
+      border-radius: 10px;
+      background: linear-gradient(155deg, #060F20, #0E2244, #1A4480);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      position: relative;
+      z-index: 1;
+      /* İkiqat kölgə: böyük yayılmış + kənar xətti simulyasiya */
+      box-shadow: 0 20px 50px rgba(0,0,0,0.5), 0 0 0 1px var(--border);
+    }
+    .featured-poster span {
+      font-family: 'Playfair Display', serif;
+      font-size: 18px;
+      font-weight: 700;
+      color: rgba(201,168,76,0.8);
+      text-align: center;
+      padding: 12px;
+      line-height: 1.3;
+      font-weight: 700;
+    }
+
+    /* XÜSUSİYYƏTLƏR */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 16px;
+      padding: 20px 60px 60px;
+    }
+
+    /* Xüsusiyyət kartı */
+    .feat-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border-soft);
+      border-radius: 12px;
+      padding: 26px 22px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feat-card:hover { border-color: var(--gold); transform: translateY(-3px); }
+    .feat-icon { font-size: 26px; margin-bottom: 12px; display: block; }
+    .feat-card h3 { font-size: 15px; font-weight: 700; margin-bottom: 7px; color: var(--white); }
+    .feat-card p { font-size: 13px; color: var(--white-dim); line-height: 1.6; }
+
+    /* HAQQINDA BÖLMƏSİ */
+    .about-section {
+      padding: 70px 60px;
+      background: var(--navy-mid);
+      border-top: 1px solid var(--border-soft);
+    }
+
+    .about-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr; /* 50% - 50% bölünmə */
+      gap: 60px;
+      align-items: center;
+    }
+
+    .about-text h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 36px;
+      font-weight: 900;
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+    .about-text h2 span { color: var(--gold); }
+    .about-text p { font-size: 14px; color: var(--white-dim); line-height: 1.75; margin-bottom: 14px; }
+
+    /* Statistika kartları */
+    .about-stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .about-stat-card {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 20px;
+      text-align: center;
+    }
+    .about-stat-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      color: var(--gold);
+    }
+    .about-stat-label { font-size: 12px; color: var(--white-dim); margin-top: 4px; }
+
+    /* GİRİŞ/QEYDİYYAT pəncərəsi */
+    .modal-backdrop {
+      display: none;                          /* Default: gizli */
+      position: fixed;
+      inset: 0;                               /* Bütün ekranı örtür */
+      background: rgba(6,12,24,0.92);         /* Tünd yarı-şəffaf örtük */
+      backdrop-filter: blur(10px);
+      z-index: 500;                           /* Hər şeyin üstündə */
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-backdrop.open { display: flex; }   /* JS "open" class əlavə edəndə görünür */
+
+    /* Pəncərə qutusu */
+    .modal {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 34px;
+      width: 100%;
+      max-width: 420px;
+      position: relative;
+      animation: slide-in 0.25s ease; /* Açılma animasiyası */
+    }
+    /* Modal açılma animasiyası — aşağıdan yuxarı sürüşür, böyüyür */
+    @keyframes slide-in {
+      from { opacity: 0; transform: translateY(18px) scale(0.97); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* Modal bağlama "X" düyməsi */
+    .modal-close {
+      position: absolute;
+      top: 14px; right: 14px;
+      width: 30px; height: 30px;
+      background: var(--white-faint);
+      border-radius: 50%;
+      color: var(--white-dim);
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: background 0.2s, color 0.2s;
+    }
+    .modal-close:hover { background: var(--gold); color: var(--navy); }
+
+    /* Modal yuxarısında logo */
+    .modal-logo { text-align: center; margin-bottom: 24px; }
+    .modal-logo .logo { font-size: 22px; }
+    .modal-logo p { font-size: 13px; color: var(--white-dim); margin-top: 4px; }
+
+    /* Giriş/Qeydiyyat tab düymələri */
+    .tab-group {
+      display: flex;
+      background: rgba(255,255,255,0.04);
+      border-radius: 8px;
+      padding: 4px;
+      margin-bottom: 24px;
+    }
+    .tab {
+      flex: 1;                    
+      padding: 9px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--white-dim);
+      background: transparent;
+      transition: all 0.2s;
+    }
+    .tab.active { background: var(--gold); color: var(--navy); } /* Aktiv tab qızılı */
+
+    /* Forma */
+    .form { display: none; flex-direction: column; gap: 14px; }
+    .form.active { display: flex; }
+
+    /* Forma sahəsi */
+    .field label {
+      display: block;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--white-dim);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 5px;
+    }
+    .field input {
+      width: 100%;
+      padding: 11px 13px;
+      background: var(--white-faint);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 7px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;               
+      transition: border-color 0.2s, background 0.2s;
+    }
+    /* Fokus — aktiv input qızılı kənarlı olur */
+    .field input:focus {
+      border-color: var(--gold);
+      background: var(--gold-dim);
+    }
+    .field input::placeholder { color: rgba(244,241,232,0.25); }
+
+    /* 2 sütunlu sıra — ad/soyad üçün */
+    .row-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+
+    /* Tam genişlikli düymə */
+    .btn-full {
+      width: 100%;
+      padding: 13px;
+      background: var(--gold);
+      color: var(--navy);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: background 0.2s, transform 0.15s;
+    }
+    /* :not(:disabled) — yalnız aktiv düymə hover alır */
+    .btn-full:hover:not(:disabled) { background: var(--gold-light); transform: translateY(-1px); }
+    .btn-full:disabled { opacity: 0.45; cursor: not-allowed; }
+
+    /* Xəta mesajı qutusu */
+    .error-box {
+      display: none;                         
+      background: rgba(200,60,60,0.12);
+      border: 1px solid rgba(200,60,60,0.3);
+      border-radius: 7px;
+      padding: 9px 13px;
+      font-size: 13px;
+      color: #FF9090;                         
+    }
+    .error-box.show { display: block; }     
+
+    /* "Hesabın yoxdur?" mətn linki */
+    .switch-text { text-align: center; font-size: 13px; color: var(--white-dim); }
+    .switch-text a { color: var(--gold); font-weight: 600; cursor: pointer; }
+
+    /* Ayırıcı xətt — "ya da" mətni ilə */
+    .divider {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 12px;
+      color: var(--white-dim);
+    }
+    /* ::before və ::after — sol və sağ xəttlər */
+    .divider::before, .divider::after {
+      content: '';
+      flex: 1;           /* Qalan genişliyi bərabər bölür */
+      height: 1px;
+      background: var(--border-soft);
+    }
+
+    /* Sosial giriş düymələri sırası */
+    .social-row { display: flex; gap: 10px; }
+    .social-btn {
+      flex: 1;
+      padding: 10px;
+      background: var(--white-faint);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 8px;
+      color: var(--white-dim);
+      font-size: 12px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      transition: all 0.2s;
+    }
+    .social-btn:hover { border-color: var(--gold); color: var(--gold-light); }
+    .social-btn svg { width: 15px; height: 15px; }
+
+    /* BİLET MODALI */
+    .ticket-modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(6,12,24,0.95);
+      backdrop-filter: blur(12px);
+      z-index: 600;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .ticket-modal.open { display: flex; }
+
+    /* Bilet panelinin qutusu */
+    .ticket-panel {
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      width: 100%;
+      max-width: 540px;
+      padding: 30px;
+      position: relative;
+      animation: slide-in 0.25s ease;
+      max-height: 90vh;    /* Ekrandan daşmasın */
+      overflow-y: auto;    /* Uzun olsa sürüşdür */
+    }
+
+    /* Filmin kiçik məlumat sırası — poster + ad + janr + reytinq */
+    .ticket-film-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 22px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--border-soft);
+    }
+
+    /* Kiçik poster — film rəngini götürür */
+    .ticket-mini-poster {
+      width: 58px; height: 80px;
+      border-radius: 7px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-family: 'Playfair Display', serif;
+      font-size: 10px;
+      color: var(--gold);
+      text-align: center;
+      padding: 4px;
+      line-height: 1.2;
+      font-weight: 700;
+    }
+
+    .ticket-film-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 20px;
+      font-weight: 700;
+    }
+    .ticket-film-genre { font-size: 12px; color: var(--white-dim); margin-top: 3px; }
+    .ticket-film-rating { font-size: 13px; color: var(--gold-light); margin-top: 4px; font-weight: 600; }
+
+    /* Kiçik başlıq etiketi — "Seans Vaxtı Seçin" kimi */
+    .sub-label {
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--white-dim);
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      margin-bottom: 10px;
+    }
+
+    /* Seans vaxtı düymələri sırası */
+    .showtime-row { display: flex; gap: 9px; flex-wrap: wrap; margin-bottom: 22px; }
+    .showtime-btn {
+      padding: 7px 16px;
+      background: var(--white-faint);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 6px;
+      color: var(--white-dim);
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    /* Hover və seçilmiş — eyni görünüş */
+    .showtime-btn:hover, .showtime-btn.selected {
+      background: var(--gold-dim);
+      border-color: var(--gold);
+      color: var(--gold-light);
+    }
+
+    /* "EKRAN" yazısı — kino ekranı simulyasiyası */
+    .screen-label {
+      text-align: center;
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 4px;
+      color: var(--white-dim);
+      background: linear-gradient(180deg, rgba(201,168,76,0.15), transparent);
+      border-radius: 6px 6px 0 0;
+      padding: 7px;
+      margin-bottom: 12px;
+    }
+
+    /* Oturacaq şəbəkəsi — sütunlar mərkəzdə */
+    .seat-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    /* Bir cərgə oturacaqlar */
+    .seat-row { display: flex; gap: 4px; }
+
+    /* Tək oturacaq */
+    .seat {
+      width: 25px; height: 19px;
+      border-radius: 3px;
+      cursor: pointer;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
+    /* Boş oturacaq */
+    .seat.empty   { background: rgba(244,241,232,0.08); border-color: rgba(244,241,232,0.12); }
+    .seat.empty:hover { background: var(--gold-dim); border-color: var(--gold); }
+    /* Seçilmiş oturacaq — qızılı */
+    .seat.picked  { background: var(--gold); box-shadow: 0 2px 8px rgba(201,168,76,0.35); }
+    /* Dolu oturacaq — klik olmur */
+    .seat.taken   { background: rgba(244,241,232,0.04); border-color: rgba(244,241,232,0.04); cursor: not-allowed; }
+
+    /* Rəng izahı (legenda) */
+    .seat-legend { display: flex; gap: 18px; justify-content: center; margin-bottom: 18px; }
+    .legend-item { display: flex; align-items: center; gap: 5px; font-size: 12px; color: var(--white-dim); }
+    .legend-color { width: 15px; height: 11px; border-radius: 2px; }
+
+    /* Ödəniş cəm sahəsi — qiymət + düymə yan-yana */
+    .payment-total {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--white-faint);
+      border: 1px solid var(--border-soft);
+      border-radius: 10px;
+      padding: 14px 18px;
+      margin-bottom: 14px;
+    }
+    .total-label { font-size: 13px; color: var(--white-dim); }
+    .total-price {
+      font-family: 'Playfair Display', serif;
+      font-size: 26px;
+      font-weight: 700;
+      color: var(--gold);
+      margin-top: 2px;
+    }
+    /* "Bilet Al" düyməsi */
+    .buy-btn {
+      padding: 12px 24px;
+      background: var(--gold);
+      color: var(--navy);
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      transition: all 0.2s;
+    }
+    .buy-btn:hover:not(:disabled) { background: var(--gold-light); transform: scale(1.03); }
+    .buy-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+
+    /* DASHBOARD — yalnız daxil olunduqda görünür */
+    #dashboard { display: none; }
+    #dashboard.open { display: block; }
+    #landing.hidden { display: none; }
+
+    /* Nav-dakı istifadəçi adı + çıxış düyməsi */
+    .nav-user { display: flex; align-items: center; gap: 12px; }
+    .user-name { font-size: 14px; font-weight: 600; }
+    .logout-btn {
+      padding: 8px 16px;
+      background: transparent;
+      border: 1.5px solid var(--border-soft);
+      border-radius: 6px;
+      color: var(--white-dim);
+      font-size: 13px;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+    .logout-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+    /* Xoş gəldiniz banneri — dashboard üstü */
+    .welcome-banner {
+      padding: 36px 60px;
+      background: linear-gradient(135deg, var(--gold-dim), transparent);
+      border-bottom: 1px solid var(--border-soft);
+    }
+    .welcome-banner h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 32px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .welcome-banner h2 span { color: var(--gold); } /* İstifadəçi adı qızılı */
+    .welcome-banner p { color: var(--white-dim); font-size: 14px; }
+
+    /* ƏLAQƏ FORMASI BÖLMƏSİ */
+    .contact-section {
+      padding: 70px 60px;
+      border-top: 1px solid var(--border-soft);
+    }
+    .contact-section h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .contact-section h2 span { color: var(--gold); }
+    .contact-section > p { color: var(--white-dim); font-size: 14px; margin-bottom: 30px; }
+
+    /* Sol: forma, Sağ: əlaqə məlumatları */
+    .contact-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .contact-form { display: flex; flex-direction: column; gap: 14px; }
+
+    /* Çox sətirli mətn sahəsi */
+    .contact-textarea {
+      width: 100%;
+      padding: 11px 13px;
+      background: var(--white-faint);
+      border: 1.5px solid var(--border-soft);
+      border-radius: 7px;
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      font-size: 14px;
+      outline: none;
+      resize: vertical;          /* Yalnız şaquli ölçü dəyişdirilə bilər */
+      min-height: 100px;
+      transition: border-color 0.2s;
+    }
+    .contact-textarea:focus { border-color: var(--gold); }
+    .contact-textarea::placeholder { color: rgba(244,241,232,0.25); }
+
+    /* Əlaqə məlumatları (ünvan, telefon, e-poçt) */
+    .contact-info { display: flex; flex-direction: column; gap: 20px; }
+    .contact-info-item { display: flex; align-items: flex-start; gap: 14px; }
+    .contact-info-icon { font-size: 22px; flex-shrink: 0; margin-top: 2px; }
+    .contact-info-text h4 { font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+    .contact-info-text p { font-size: 13px; color: var(--white-dim); line-height: 1.5; }
+
+    /* TOAST BİLDİRİŞİ — ekranın altında çıxan qısa mesaj */
+    .toast {
+      position: fixed;
+      bottom: 28px;
+      left: 50%;
+      transform: translateX(-50%) translateY(14px); /* Mərkəz + gizli vəziyyət */
+      background: var(--navy-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 11px 22px;
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--white);
+      opacity: 0;                    /* Gizli */
+      transition: all 0.3s;
+      z-index: 999;
+      pointer-events: none;
+      white-space: nowrap;           /* Mətn bir sətirdə qalsın */
+      box-shadow: 0 8px 28px rgba(0,0,0,0.4);
+    }
+    /* show class əlavə olunanda görünür */
+    .toast.show {
+      opacity: 1;
+      transform: translateX(-50%) translateY(0);
+    }
+
+    /* FOOTER yəni səhifənin alt hissəsi*/
+    footer {
+      border-top: 1px solid var(--border-soft);
+      padding: 36px 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;           /* Kiçik ekranda alta keçir */
+      gap: 18px;
+      background: var(--navy-mid);
+    }
+    .footer-logo .logo { font-size: 20px; }
+    .footer-logo p { font-size: 12px; color: var(--white-dim); margin-top: 4px; }
+    .footer-links { display: flex; gap: 22px; }
+    .footer-links a { font-size: 13px; color: var(--white-dim); transition: color 0.2s; }
+    .footer-links a:hover { color: var(--gold-light); }
+    .footer-right { font-size: 12px; color: var(--white-dim); }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+      /* Bütün bölmələrdə yan paddingi azalt */
+      .nav, .section, .features, .welcome-banner, .halls-section, .about-section, .contact-section, footer {
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+      .nav-links { display: none; }          /* Nav linkləri mobilde gizlən */
+      .featured { margin: 10px 20px; padding: 26px 22px; flex-direction: column; } /* Banneri şaquli düz */
+      .featured-poster { width: 130px; height: 190px; }  /* Posteru kiçilt */
+      .about-grid { grid-template-columns: 1fr; gap: 30px; }    /* Haqqında: 1 sütun */
+      .contact-grid { grid-template-columns: 1fr; }             /* Əlaqə: 1 sütun */
+      .hero h1 { font-size: 52px; }          /* Başlığı kiçilt */
+      .stats { gap: 24px; }                  /* Statistika aralığını azalt */
+    }
+  </style>
+  -->
+</head>
+<body>
+
+<!-- Bildiriş toast qutusu — JS ilə idarə edilir, hər yerdən görünür -->
+<div class="toast" id="toast"></div>
+
+<!-- LANDING SƏHİFƏSİ ilk görünən hissə -->
+<div id="landing">
+
+  <!-- NAVİQASİYA — sticky (sürüşdükcə yuxarıda qalır) -->
+  <nav class="nav">
+    <!-- Logo: "Cine" ağ, "Vault" qızılı (span ilə fərqli rəng) -->
+    <div class="logo">Cine<span>Vault</span></div>
+
+    <!-- Naviqasiya linkləri — hər link əlaqəli bölməyə hash ilə keçid edir -->
+    <div class="nav-links">
+      <a href="#filmlər-section">Filmlər</a>
+      <a href="#zallar-section">Zallar</a>
+      <a href="#haqqında-section">Haqqında</a>
+      <a href="#əlaqə-section">Əlaqə</a>
+    </div>
+
+    <!-- "Daxil ol" düyməsi — kliklənəndə giriş modalı açılır -->
+    <button class="nav-btn" onclick="openModal('login')">Daxil ol</button>
+  </nav>
+
+  <!-- HERO BÖLMƏSİ — səhifənin ən üst tanıtım hissəsi -->
+  <section class="hero">
+    <!-- Canlı nöqtəli badge — pulse animasiyalı -->
+    <div class="hero-badge">
+      <div class="dot"></div>
+      İndi Yayımlanır
+    </div>
+
+    <!-- Əsas başlıq: "em" etiketi ilə "Təcrübəsi" qızılı + italik -->
+    <h1>Premium Kino<br><em>Təcrübəsi</em></h1>
+
+    <!-- Qısa izah mətni -->
+    <p>IMAX · 4DX · Dolby Atmos — ən böyük ekranda, ən yaxşı səslə. Biletini onlayn al, yerini seç.</p>
+
+    <!-- İki düymə: qeydiyyat + giriş -->
+    <div class="hero-btns">
+      <button class="btn-primary" onclick="openModal('register')">🎬 Pulsuz Qeydiyyat</button>
+      <button class="btn-outline" onclick="openModal('login')">Daxil ol</button>
+    </div>
+
+    <!-- Statistik rəqəmlər — platforma haqqında qısa faktlar -->
+    <div class="stats">
+      <div><div class="stat-num">250+</div><div class="stat-label">Aktiv Film</div></div>
+      <div><div class="stat-num">32</div><div class="stat-label">Kino Zalı</div></div>
+      <div><div class="stat-num">IMAX</div><div class="stat-label">4DX · Dolby</div></div>
+      <div><div class="stat-num">1.2M</div><div class="stat-label">İzləyici</div></div>
+    </div>
+  </section>
+
+  <!-- ÖNE ÇIXAN FİLM BANNERI — "Həftənin Filmi" bölməsi -->
+  <div class="featured">
+    <div class="featured-text">
+      <div class="featured-brand">🔥 Həftənin Filmi</div>
+      <h2>Dune: Part Two</h2>
+
+      <!-- Film metadatası -->
+      <div class="featured-meta">
+        <span class="meta-tag">⭐ 8.5 / 10</span>
+        <span class="meta-tag">166 dəq</span>
+        <span class="meta-tag">Fantastika</span>
+        <span class="meta-tag">IMAX</span>
+      </div>
+      <p>Paul Atreides Fremen xalqı ilə birləşərək ata qatillərindən intiqam alır. Kəhkəşanın taleyini dəyişdirəcək savaş başlayır.</p>
+
+      <!-- Bilet al düyməsi — daxil olmamış istifadəçini login modalına aparır -->
+      <button class="btn-primary" onclick="openModal('login')">Bilet Al — ₼8</button>
+    </div>
+
+    <!-- Miniatür poster — gradient fon, mətn üzərindədir -->
+    <div class="featured-poster"><span>DUNE<br>PART TWO</span></div>
+  </div>
+
+  <!-- FİLMLƏR BÖLMƏSİ — "Bu Həftə" siyahısı -->
+  <section id="filmlər-section" class="section">
+    <div class="section-header">
+      <h2>Bu Həftə</h2>
+      <!-- "Hamısı →" — daxil olmamış üçün login açır -->
+      <a href="#" class="see-all" onclick="openModal('login');return false">Hamısı →</a>
+    </div>
+    <!-- Filmlər JS tərəfindən bu div-ə yazılır (buildLanding → renderMovies) -->
+    <div class="film-row" id="l-week"></div>
+  </section>
+
+  <!-- CİZGİ FİLMLƏR BÖLMƏSİ -->
+  <section class="section" style="padding-top:0;">
+    <div class="section-header"><h2>Cizgi Filmlər</h2></div>
+    <div class="film-row" id="l-anim"></div>
+  </section>
+
+  <!-- XÜSUSİYYƏTLƏR başlığı — "Niyə CineVault?" -->
+  <section class="section" style="padding-top:10px;">
+    <div class="section-header"><h2>Niyə <span style="color:var(--gold)">CineVault</span>?</h2></div>
+  </section>
+
+  <!-- 4 xüsusiyyət kartı -->
+  <div class="features">
+    <div class="feat-card">
+      <span class="feat-icon">🎥</span>
+      <h3>IMAX & 4DX</h3>
+      <p>Premium zallarımızda həyəcan verici kino təcrübəsi yaşayın.</p>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">💺</span>
+      <h3>Yer Seçimi</h3>
+      <p>İnteraktiv xəritə ilə sevdiyiniz yeri əvvəlcədən seçin.</p>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">⚡</span>
+      <h3>Ani Bilet</h3>
+      <p>30 saniyədə biletinizi alın, e-poçtunuza göndərin.</p>
+    </div>
+    <div class="feat-card">
+      <span class="feat-icon">🔒</span>
+      <h3>Güvənli Ödəmə</h3>
+      <p>256-bit SSL şifrələmə ilə tam təhlükəsiz ödəniş.</p>
+    </div>
+  </div>
+
+  <!-- KINO ZALLARI BÖLMƏSİ — id nav linkinin hədəfi -->
+  <section id="zallar-section" class="halls-section">
+    <h2 class="section-title">Kino <span>Zallarımız</span></h2>
+    <!-- 6 zal kartı — auto-fit grid ilə düzülür -->
+    <div class="halls-grid">
+      <div class="hall-card">
+        <div class="hall-icon">🎬</div>
+        <div class="hall-name">Zal 1 — IMAX</div>
+        <div class="hall-type">IMAX Premium</div>
+        <div class="hall-desc">350 nəfərlik böyük IMAX ekranı. Dolby Atmos səs sistemi ilə tam daldalma təcrübəsi.</div>
+        <div class="hall-seats">💺 <strong>350</strong> yer · IMAX 70mm</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">🌀</div>
+        <div class="hall-name">Zal 2 — 4DX</div>
+        <div class="hall-type">4DX Effekt</div>
+        <div class="hall-desc">Hərəkət, külək, yağış — filmi hiss edin. 4DX texnologiyası ilə real effektlər.</div>
+        <div class="hall-seats">💺 <strong>180</strong> yer · 4DX Motion</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">🔊</div>
+        <div class="hall-name">Zal 3 — Dolby</div>
+        <div class="hall-type">Dolby Cinema</div>
+        <div class="hall-desc">Dolby Vision görüntü + Dolby Atmos səs. Rəng dəqiqliyi və dərinliyi üzrə ən yaxşı zal.</div>
+        <div class="hall-seats">💺 <strong>240</strong> yer · Dolby Vision</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">👑</div>
+        <div class="hall-name">Zal 4 — VIP</div>
+        <div class="hall-type">VIP Lüks</div>
+        <div class="hall-desc">Dəri oturacaqlar, şəxsi xidmət, yemək sifarişi. Üstün rahatlıq üçün VIP zal.</div>
+        <div class="hall-seats">💺 <strong>60</strong> yer · Lüks Oturacaq</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">🎭</div>
+        <div class="hall-name">Zal 5 — Standart A</div>
+        <div class="hall-type">Standart</div>
+        <div class="hall-desc">Rahat oturacaqlar, yüksək keyfiyyətli ekran. Ailə izləntiləri üçün ideal seçim.</div>
+        <div class="hall-seats">💺 <strong>200</strong> yer · HD Ekran</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">🌙</div>
+        <div class="hall-name">Zal 6 — Gecə</div>
+        <div class="hall-type">Gecə Seanşı</div>
+        <div class="hall-desc">Yalnız gecə saatlarında açıq olan xüsusi zal. Romantik atmosfer, yumşaq işıqlandırma.</div>
+        <div class="hall-seats">💺 <strong>120</strong> yer · Soft Light</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HAQQINDA BÖLMƏSİ — 2 sütunlu grid: sol mətn, sağ statistika -->
+  <section id="haqqında-section" class="about-section">
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>CineVault <span>Haqqında</span></h2>
+        <p>CineVault 2018-ci ildə Azərbaycanda premium kino təcrübəsini hamıya çatdırmaq məqsədi ilə yaradılıb. Ölkənin ən müasir kino zallarına sahib olan platformamız hər yaşdan izləyicilər üçün unudulmaz anlar yaradır.</p>
+        <p>IMAX, 4DX, Dolby Cinema texnologiyaları ilə silahlanmış zallarımız, Bakının mərkəzindən başlayaraq bütün ölkəyə yayılıb. Onlayn bilet sistemimiz vasitəsilə siz evdən rahat şəkildə biletinizi ala, yerinizi seçə bilərsiniz.</p>
+        <p>Missiyamız: hər filmi bir hadisəyə çevirmək.</p>
+      </div>
+      <!-- 2x2 statistika kartları şəbəkəsi -->
+      <div class="about-stats">
+        <div class="about-stat-card">
+          <div class="about-stat-num">6+</div>
+          <div class="about-stat-label">İl Təcrübə</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num">32</div>
+          <div class="about-stat-label">Kino Zalı</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num">1.2M</div>
+          <div class="about-stat-label">Xoşbəxt İzləyici</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num">250+</div>
+          <div class="about-stat-label">Aktiv Film</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ƏLAQƏ BÖLMƏSİ — sol forma, sağ əlaqə məlumatları -->
+  <section id="əlaqə-section" class="contact-section">
+    <h2>Bizimlə <span style="color:var(--gold)">Əlaqə</span></h2>
+    <p>Sualınız var? Müraciətinizi göndərin, ən qısa zamanda cavab verərik.</p>
+    <div class="contact-grid">
+      <!-- Sol: müraciət forması -->
+      <div class="contact-form">
+        <div class="field">
+          <label>Adınız</label>
+          <input type="text" id="c-name" placeholder="Ad Soyad" />
+        </div>
+        <div class="field">
+          <label>E-poçt</label>
+          <input type="email" id="c-email" placeholder="adınız@mail.com" />
+        </div>
+        <div class="field">
+          <label>Mövzu</label>
+          <input type="text" id="c-subject" placeholder="Müraciətin mövzusu" />
+        </div>
+        <div class="field">
+          <label>Mesaj</label>
+          <textarea class="contact-textarea" id="c-msg" placeholder="Mesajınızı yazın..."></textarea>
+        </div>
+        <!-- sendContact() funksiyası doğrulama + toast göstərir -->
+        <button class="btn-primary" style="align-self:flex-start; padding:12px 28px;" onclick="sendContact()">Göndər →</button>
+      </div>
+
+      <!-- Sağ: əlaqə məlumatları siyahısı -->
+      <div class="contact-info">
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📍</div>
+          <div class="contact-info-text">
+            <h4>Ünvan</h4>
+            <p>Nizami küçəsi 15, Bakı, Azərbaycan</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📞</div>
+          <div class="contact-info-text">
+            <h4>Telefon</h4>
+            <p>+994 12 555 00 11<br>İş saatları: 09:00 — 23:00</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">✉️</div>
+          <div class="contact-info-text">
+            <h4>E-poçt</h4>
+            <p>info@cinevault.az<br>support@cinevault.az</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">🕐</div>
+          <div class="contact-info-text">
+            <h4>İş Saatları</h4>
+            <p>Həftə içi: 09:00 — 23:00<br>Həftə sonu: 10:00 — 00:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER — logo, linklər, müəllif hüququ -->
+  <footer>
+    <div class="footer-logo">
+      <div class="logo">Cine<span>Vault</span></div>
+      <p>© 2025 CineVault. Bütün hüquqlar qorunur.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#filmlər-section">Filmlər</a>
+      <a href="#zallar-section">Zallar</a>
+      <a href="#haqqında-section">Haqqında</a>
+      <a href="#əlaqə-section">Əlaqə</a>
+    </div>
+    <div class="footer-right">🎬 Premium Kino Təcrübəsi</div>
+  </footer>
+
+</div>
+<!-- /landing sonu -->
+
+<!-- DASHBOARD -->
+<div id="dashboard">
+
+  <!-- Dashboard naviqasiyası — istifadəçi adı + çıxış düyməsi -->
+  <nav class="nav">
+    <div class="logo">Cine<span>Vault</span></div>
+    <div class="nav-links">
+      <a href="#d-filmlər">Filmlər</a>
+      <a href="#d-zallar">Zallar</a>
+      <a href="#d-haqqında">Haqqında</a>
+      <a href="#d-əlaqə">Əlaqə</a>
+    </div>
+    <div class="nav-user">
+      <!-- id="nav-name" — JS buraya istifadəçi adını yazır -->
+      <span class="user-name" id="nav-name"></span>
+      <button class="logout-btn" onclick="logout()">Çıxış</button>
+    </div>
+  </nav>
+
+  <!-- Xoş gəldiniz banneri — istifadəçi adı JS ilə doldurulur -->
+  <div class="welcome-banner">
+    <h2>Xoş gəldiniz, <span id="welcome-name"></span>! 🎬</h2>
+    <p>Bugünkü seanslara baxın, yerini seçin, biletinizi alın.</p>
+  </div>
+
+  <!-- Dashboard-da öne çıxan film — burada "Bilet Al" bilet modalı açır -->
+  <div class="featured" style="margin-top:30px;">
+    <div class="featured-text">
+      <div class="featured-brand">🔥 İndi Göstərilir</div>
+      <h2>Dune: Part Two</h2>
+      <div class="featured-meta">
+        <span class="meta-tag">⭐ 8.5</span>
+        <span class="meta-tag">IMAX</span>
+        <span class="meta-tag">4DX</span>
+        <span class="meta-tag">2024</span>
+      </div>
+      <p>Paul Atreides Fremen xalqı ilə birləşərək ata qatillərindən intiqam alır.</p>
+      <!-- openTicket(1) — 1 nömrəli film (Dune) üçün bilet modalı açır -->
+      <button class="btn-primary" onclick="openTicket(1)">🎟️ Bilet Al — ₼8</button>
+    </div>
+    <div class="featured-poster" style="background:linear-gradient(155deg,#060F20,#0E2244,#1A4480);">
+      <span>DUNE<br>PART TWO</span>
+    </div>
+  </div>
+
+  <!-- Dashboard film bölmələri — JS ilə doldurulur (buildDashboard) -->
+  <section id="d-filmlər" class="section">
+    <div class="section-header"><h2>Bu Həftə Göstərilir</h2></div>
+    <div class="film-row" id="d-week"></div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="section-header"><h2>Cizgi Filmlər</h2></div>
+    <div class="film-row" id="d-anim"></div>
+  </section>
+
+  <section class="section" style="padding-top:0;">
+    <div class="section-header"><h2>Klassiklər</h2></div>
+    <div class="film-row" id="d-class"></div>
+  </section>
+
+  <section class="section" style="padding-top:0; padding-bottom:50px;">
+    <div class="section-header"><h2>Dram & Tarix</h2></div>
+    <div class="film-row" id="d-drama"></div>
+  </section>
+
+  <!-- Dashboard-da zallar bölməsi (landing ilə eyni məzmun) -->
+  <section id="d-zallar" class="halls-section">
+    <h2 class="section-title">Kino <span>Zallarımız</span></h2>
+    <div class="halls-grid">
+      <div class="hall-card">
+        <div class="hall-icon">🎬</div>
+        <div class="hall-name">Zal 1 — IMAX</div>
+        <div class="hall-type">IMAX Premium</div>
+        <div class="hall-desc">350 nəfərlik böyük IMAX ekranı. Dolby Atmos səs sistemi ilə tam daldalma təcrübəsi.</div>
+        <div class="hall-seats">💺 <strong>350</strong> yer · IMAX 70mm</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">🌀</div>
+        <div class="hall-name">Zal 2 — 4DX</div>
+        <div class="hall-type">4DX Effekt</div>
+        <div class="hall-desc">Hərəkət, külək, yağış — filmi hiss edin. 4DX texnologiyası ilə real effektlər.</div>
+        <div class="hall-seats">💺 <strong>180</strong> yer · 4DX Motion</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">🔊</div>
+        <div class="hall-name">Zal 3 — Dolby</div>
+        <div class="hall-type">Dolby Cinema</div>
+        <div class="hall-desc">Dolby Vision görüntü + Dolby Atmos səs. Rəng dəqiqliyi və dərinliyi üzrə ən yaxşı zal.</div>
+        <div class="hall-seats">💺 <strong>240</strong> yer · Dolby Vision</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">👑</div>
+        <div class="hall-name">Zal 4 — VIP</div>
+        <div class="hall-type">VIP Lüks</div>
+        <div class="hall-desc">Dəri oturacaqlar, şəxsi xidmət, yemək sifarişi. Üstün rahatlıq üçün VIP zal.</div>
+        <div class="hall-seats">💺 <strong>60</strong> yer · Lüks Oturacaq</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">🎭</div>
+        <div class="hall-name">Zal 5 — Standart A</div>
+        <div class="hall-type">Standart</div>
+        <div class="hall-desc">Rahat oturacaqlar, yüksək keyfiyyətli ekran. Ailə izləntiləri üçün ideal seçim.</div>
+        <div class="hall-seats">💺 <strong>200</strong> yer · HD Ekran</div>
+      </div>
+      <div class="hall-card">
+        <div class="hall-icon">🌙</div>
+        <div class="hall-name">Zal 6 — Gecə</div>
+        <div class="hall-type">Gecə Seanşı</div>
+        <div class="hall-desc">Yalnız gecə saatlarında açıq olan xüsusi zal. Romantik atmosfer, yumşaq işıqlandırma.</div>
+        <div class="hall-seats">💺 <strong>120</strong> yer · Soft Light</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard-da haqqında bölməsi -->
+  <section id="d-haqqında" class="about-section">
+    <div class="about-grid">
+      <div class="about-text">
+        <h2>CineVault <span>Haqqında</span></h2>
+        <p>CineVault 2018-ci ildə Azərbaycanda premium kino təcrübəsini hamıya çatdırmaq məqsədi ilə yaradılıb. Ölkənin ən müasir kino zallarına sahib olan platformamız hər yaşdan izləyicilər üçün unudulmaz anlar yaradır.</p>
+        <p>IMAX, 4DX, Dolby Cinema texnologiyaları ilə silahlanmış zallarımız, Bakının mərkəzindən başlayaraq bütün ölkəyə yayılıb. Onlayn bilet sistemimiz vasitəsilə siz evdən rahat şəkildə biletinizi ala, yerinizi seçə bilərsiniz.</p>
+        <p>Missiyamız: hər filmi bir hadisəyə çevirmək.</p>
+      </div>
+      <div class="about-stats">
+        <div class="about-stat-card">
+          <div class="about-stat-num">6+</div>
+          <div class="about-stat-label">İl Təcrübə</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num">32</div>
+          <div class="about-stat-label">Kino Zalı</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num">1.2M</div>
+          <div class="about-stat-label">Xoşbəxt İzləyici</div>
+        </div>
+        <div class="about-stat-card">
+          <div class="about-stat-num">250+</div>
+          <div class="about-stat-label">Aktiv Film</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Dashboard-da əlaqə bölməsi -->
+  <section id="d-əlaqə" class="contact-section">
+    <h2>Bizimlə <span style="color:var(--gold)">Əlaqə</span></h2>
+    <p>Sualınız var? Müraciətinizi göndərin, ən qısa zamanda cavab verərik.</p>
+    <div class="contact-grid">
+      <div class="contact-form">
+        <div class="field">
+          <label>Adınız</label>
+          <input type="text" id="dc-name" placeholder="Ad Soyad" />
+        </div>
+        <div class="field">
+          <label>E-poçt</label>
+          <input type="email" id="dc-email" placeholder="adınız@mail.com" />
+        </div>
+        <div class="field">
+          <label>Mövzu</label>
+          <input type="text" id="dc-subject" placeholder="Müraciətin mövzusu" />
+        </div>
+        <div class="field">
+          <label>Mesaj</label>
+          <textarea class="contact-textarea" id="dc-msg" placeholder="Mesajınızı yazın..."></textarea>
+        </div>
+        <!-- sendContactDash() — dashboard üçün ayrı funksiya (fərqli id-lər) -->
+        <button class="btn-primary" style="align-self:flex-start; padding:12px 28px;" onclick="sendContactDash()">Göndər →</button>
+      </div>
+      <div class="contact-info">
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📍</div>
+          <div class="contact-info-text">
+            <h4>Ünvan</h4>
+            <p>Nizami küçəsi 15, Bakı, Azərbaycan</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">📞</div>
+          <div class="contact-info-text">
+            <h4>Telefon</h4>
+            <p>+994 12 555 00 11<br>İş saatları: 09:00 — 23:00</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">✉️</div>
+          <div class="contact-info-text">
+            <h4>E-poçt</h4>
+            <p>info@cinevault.az<br>support@cinevault.az</p>
+          </div>
+        </div>
+        <div class="contact-info-item">
+          <div class="contact-info-icon">🕐</div>
+          <div class="contact-info-text">
+            <h4>İş Saatları</h4>
+            <p>Həftə içi: 09:00 — 23:00<br>Həftə sonu: 10:00 — 00:00</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="footer-logo">
+      <div class="logo">Cine<span>Vault</span></div>
+      <p>© 2024 CineVault. Bütün hüquqlar qorunur.</p>
+    </div>
+    <div class="footer-links">
+      <a href="#d-filmlər">Filmlər</a>
+      <a href="#d-zallar">Zallar</a>
+      <a href="#d-haqqında">Haqqında</a>
+      <a href="#d-əlaqə">Əlaqə</a>
+    </div>
+    <div class="footer-right">🎬 Premium Kino Təcrübəsi</div>
+  </footer>
+
+</div>
+<!-- /dashboard sonu -->
+
+<!-- GİRİŞ / QEYDİYYAT MODALI -->
+<div class="modal-backdrop" id="auth-modal" onclick="backdropClick(event)">
+  <div class="modal">
+    <!-- Modal bağlama düyməsi -->
+    <button class="modal-close" onclick="closeModal()">✕</button>
+
+    <!-- Modal yuxarısında logo + dinamik başlıq mətni -->
+    <div class="modal-logo">
+      <div class="logo">Cine<span>Vault</span></div>
+      <!-- id="modal-subtitle" — switchTab() funksiyası bu mətni dəyişir -->
+      <p id="modal-subtitle">Hesabınıza daxil olun</p>
+    </div>
+
+    <!-- Tab düymələri — "Giriş" / "Qeydiyyat" arasında keçid -->
+    <div class="tab-group">
+      <button class="tab active" id="tab-login" onclick="switchTab('login')">Giriş</button>
+      <button class="tab" id="tab-reg" onclick="switchTab('register')">Qeydiyyat</button>
+    </div>
+
+    <!-- GİRİŞ FORMASI — default aktiv göstərilir -->
+    <div class="form active" id="form-login">
+      <!-- Xəta mesajı — doğrulama uğursuz olsa görünür -->
+      <div class="error-box" id="login-err"></div>
+      <div class="field">
+        <label>E-poçt</label>
+        <input type="email" id="l-email" placeholder="adınız@mail.com" />
+      </div>
+      <div class="field">
+        <label>Şifrə</label>
+        <input type="password" id="l-pass" placeholder="••••••••" />
+      </div>
+      <!-- doLogin() — API çağırır, uğurlu olsa dashboard açılır -->
+      <button class="btn-full" onclick="doLogin()">Daxil ol</button>
+
+      <!-- Ayırıcı xətt -->
+      <div class="divider">ya da</div>
+
+      <!-- Sosial giriş düymələri (hazırda yalnız toast göstərir) -->
+      <div class="social-row">
+        <button class="social-btn" onclick="toast('Google ilə giriş yaxında!')">
+          <!-- Google SVG loqosu — dörd rəngli path elementləri -->
+          <svg viewBox="0 0 24 24"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Google
+        </button>
+        <button class="social-btn" onclick="toast('Apple ilə giriş yaxında!')">
+          <!-- Apple SVG loqosu -->
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+          Apple
+        </button>
+      </div>
+
+      <!-- Tab keçid mətni -->
+      <div class="switch-text">Hesabın yoxdur? <a onclick="switchTab('register')">Qeydiyyatdan keç</a></div>
+    </div>
+
+    <!-- QEYDİYYAT FORMASI — default gizli, tab kliklənəndə görünür -->
+    <div class="form" id="form-reg">
+      <div class="error-box" id="reg-err"></div>
+      <!-- Ad və soyad sahələri — 2 sütunlu düzüm -->
+      <div class="row-2">
+        <div class="field"><label>Ad</label><input type="text" id="r-name" placeholder="Adınız" /></div>
+        <div class="field"><label>Soyad</label><input type="text" id="r-surname" placeholder="Soyadınız" /></div>
+      </div>
+      <div class="field"><label>E-poçt</label><input type="email" id="r-email" placeholder="adınız@mail.com" /></div>
+      <div class="field"><label>Şifrə (ən az 8 simvol)</label><input type="password" id="r-pass" placeholder="••••••••" /></div>
+      <div class="field"><label>Şifrəni Təkrarla</label><input type="password" id="r-pass2" placeholder="••••••••" /></div>
+      <!-- doRegister() — doğrulama + API çağırır -->
+      <button class="btn-full" onclick="doRegister()">Qeydiyyatdan Keç</button>
+      <div class="switch-text">Hesabın var? <a onclick="switchTab('login')">Daxil ol</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- BİLET MODALI — seans seçimi + yer seçimi -->
+<div class="ticket-modal" id="ticket-modal" onclick="ticketBackdrop(event)">
+  <div class="ticket-panel">
+    <button class="modal-close" onclick="closeTicket()" style="position:absolute;top:14px;right:14px;">✕</button>
+
+    <!-- Filmin kiçik məlumat sırası — JS tərəfindən doldurulur -->
+    <div class="ticket-film-info">
+      <!-- id="t-poster" — JS burada film rəngini class ilə tətbiq edir -->
+      <div class="ticket-mini-poster" id="t-poster"></div>
+      <div>
+        <div class="ticket-film-name" id="t-name"></div>
+        <div class="ticket-film-genre" id="t-genre"></div>
+        <div class="ticket-film-rating" id="t-rating"></div>
+      </div>
+    </div>
+
+    <!-- Seans vaxtı seçimi — pickShowtime() funksiyası aktivləşdirir -->
+    <div class="sub-label">Seans Vaxtı Seçin</div>
+    <div class="showtime-row">
+      <button class="showtime-btn" onclick="pickShowtime(this,'10:30')">10:30</button>
+      <button class="showtime-btn" onclick="pickShowtime(this,'13:00')">13:00</button>
+      <button class="showtime-btn" onclick="pickShowtime(this,'15:45')">15:45</button>
+      <button class="showtime-btn" onclick="pickShowtime(this,'18:30')">18:30</button>
+      <button class="showtime-btn" onclick="pickShowtime(this,'21:00')">21:00</button>
+      <button class="showtime-btn" onclick="pickShowtime(this,'23:15')">23:15</button>
+    </div>
+
+    <!-- Yer seçimi — oturacaq şəbəkəsi -->
+    <div class="sub-label">Yer Seçin</div>
+    <!-- Ekran simvolik göstəricisi -->
+    <div class="screen-label">— E K R A N —</div>
+    <!-- id="seat-grid" — JS buildSeatGrid() ilə doldurulur -->
+    <div class="seat-grid" id="seat-grid"></div>
+
+    <!-- Rəng izahı (legenda) — boş / seçilmiş / dolu -->
+    <div class="seat-legend">
+      <div class="legend-item"><div class="legend-color" style="background:rgba(244,241,232,0.08);border:1px solid rgba(244,241,232,0.12);"></div>Boş</div>
+      <div class="legend-item"><div class="legend-color" style="background:var(--gold);"></div>Seçilmiş</div>
+      <div class="legend-item"><div class="legend-color" style="background:rgba(244,241,232,0.04);"></div>Dolu</div>
+    </div>
+
+    <!-- Ödəniş cəmi + bilet al düyməsi -->
+    <div class="payment-total">
+      <div>
+        <!-- id="t-count" və "t-price" — updatePrice() tərəfindən yenilənir -->
+        <div class="total-label">Seçilmiş: <span id="t-count">0</span> yer</div>
+        <div class="total-price" id="t-price">₼0.00</div>
+      </div>
+      <!-- disabled — yer və seans seçilməyincə aktiv olmur -->
+      <button class="buy-btn" id="buy-btn" onclick="buyTicket()" disabled>Bilet Al →</button>
+    </div>
+  </div>
+</div>
+
+<!-- JAVASCRIPT -->
+<script>
+  // Qlobal dəyişənlər
+
+  // Backend API adresi 
+  const API = 'http://localhost:3000/api';
+
+  // Hazırda daxil olmuş istifadəçi — null = daxil olmayıb
+  let currentUser = null;
+
+  // Bilet seçimi — seans, oturacaqlar saxlanılır
+  let selection = { filmId: null, filmName: null, showtime: null, seats: [] };
+
+  // Bir biletin qiyməti (manatla)
+  const TICKET_PRICE = 8;
+
+  // Filmlər kateqoriyalar üzrə
+  const movies = {
+    week: [
+      { id:1,  name:'Dune: Part Two',       genre:'Fantastika',   year:2024, r:'8.5', color:'navy-1',  isNew:true  },
+      { id:2,  name:'Gladiator II',          genre:'Tarixi',       year:2024, r:'7.8', color:'gold-1'              },
+      { id:3,  name:'Alien: Romulus',        genre:'Dəhşət',       year:2024, r:'7.4', color:'teal',    isNew:true  },
+      { id:4,  name:'Furiosa',               genre:'Ekşn',         year:2024, r:'7.7', color:'gold-2'              },
+      { id:5,  name:'Deadpool & Wolverine',  genre:'Supergüclü',   year:2024, r:'7.9', color:'navy-2',  isNew:true  },
+      { id:6,  name:'A Quiet Place: Day 1',  genre:'Dəhşət',       year:2024, r:'7.2', color:'indigo'              },
+      { id:7,  name:'Twisters',              genre:'Fəlakət',      year:2024, r:'7.0', color:'teal'                },
+      { id:8,  name:'Longlegs',              genre:'Triller',      year:2024, r:'6.3', color:'slate'               },
+    ],
+    anim: [
+      { id:10, name:'Inside Out 2',          genre:'Animasiya',    year:2024, r:'7.9', color:'gold-1',  isNew:true  },
+      { id:11, name:'Moana 2',               genre:'Animasiya',    year:2024, r:'6.9', color:'teal'                },
+      { id:12, name:'Inside Out',            genre:'Animasiya',    year:2015, r:'8.1', color:'navy-3'              },
+      { id:13, name:'Coco',                  genre:'Animasiya',    year:2017, r:'8.4', color:'gold-2'              },
+      { id:14, name:'Soul',                  genre:'Animasiya',    year:2020, r:'8.1', color:'indigo'              },
+      { id:15, name:'Ratatouille',           genre:'Animasiya',    year:2007, r:'8.1', color:'teal'                },
+      { id:16, name:'WALL·E',                genre:'Animasiya',    year:2008, r:'8.4', color:'navy-1'              },
+      { id:17, name:'Up',                    genre:'Animasiya',    year:2009, r:'8.3', color:'navy-2'              },
+    ],
+    classics: [
+      { id:30, name:'The Dark Knight',       genre:'Triller',      year:2008, r:'9.0', color:'slate'               },
+      { id:31, name:'Inception',             genre:'Elmi-fant.',   year:2010, r:'8.8', color:'navy-3'              },
+      { id:32, name:'Interstellar',          genre:'Kosmik',       year:2014, r:'8.7', color:'indigo'              },
+      { id:33, name:'The Matrix',            genre:'Fantastika',   year:1999, r:'8.7', color:'teal'                },
+      { id:34, name:'Pulp Fiction',          genre:'Kriminal',     year:1994, r:'8.9', color:'gold-1'              },
+      { id:35, name:'Fight Club',            genre:'Dram',         year:1999, r:'8.8', color:'navy-1'              },
+    ],
+    drama: [
+      { id:40, name:'Oppenheimer',           genre:'Tarixi',       year:2023, r:'8.3', color:'gold-2'              },
+      { id:41, name:"Schindler's List",      genre:'Tarixi-dram',  year:1993, r:'9.0', color:'slate'               },
+      { id:42, name:'The Shawshank',         genre:'Dram',         year:1994, r:'9.3', color:'navy-2'              },
+      { id:43, name:'Parasite',              genre:'Triller',      year:2019, r:'8.5', color:'teal'                },
+      { id:44, name:'1917',                  genre:'Müharibə',     year:2019, r:'8.3', color:'gold-1'              },
+    ]
+  };
+
+  // Köməkçi funksiyalar
+
+  // Film id-sinə görə bütün kateqoriyalarda axtarış
+  // Tapılsa filmi, tapılmasa null qaytarır
+  function findMovie(id) {
+    for (const cat of Object.values(movies)) {
+      const m = cat.find(f => f.id === id);
+      if (m) return m;
+    }
+    return null;
+  }
+
+  // Film kartının HTML şablonu
+  function movieCard(film, fn) {
+    return `
+      <div class="film-card" onclick="${fn}(${film.id})">
+        <div class="poster ${film.color}">
+          <div class="poster-title">${film.name}</div>
+          ${film.isNew ? '<div class="badge-new">Yeni</div>' : ''}
+          <div class="badge-rating">★ ${film.r}</div>
+        </div>
+        <div class="card-info">
+          <div class="card-name">${film.name}</div>
+          <div class="card-genre">${film.genre}</div>
+          <div class="card-year">${film.year}</div>
+        </div>
+      </div>`;
+  }
+
+  // Filmlər sırasına sürükləmə (drag-to-scroll) əlavə edir
+  function enableDrag(el) {
+    let isDown = false, startX, scrollStart;
+    el.addEventListener('mousedown', e => { isDown = true; startX = e.pageX - el.offsetLeft; scrollStart = el.scrollLeft; });
+    document.addEventListener('mouseup', () => isDown = false);
+    el.addEventListener('mousemove', e => {
+      if (!isDown) return;
+      e.preventDefault();
+      // 1.4 daha sürətli scroll
+      el.scrollLeft = scrollStart - (e.pageX - el.offsetLeft - startX) * 1.4;
+    });
+  }
+
+  // Film kartlarını ekranda görünən hala gətirir
+  function renderMovies(containerId, list, clickFn) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    el.innerHTML = list.map(f => movieCard(f, clickFn)).join('');
+    enableDrag(el);
+  }
+
+
+  // Landing səhisəfi yəni səhifəyə ilk girikdə görünən hissə
+
+  // Landing-da filmlərə  klik-giriş etmək lazım olduğunu bildirir
+  function landingClick() {
+    toast('Bilet almaq ucun daxil olun!');
+    openModal('login');
+  }
+
+  // Landing-ın film sıralarını doldurur
+  function buildLanding() {
+    renderMovies('l-week', movies.week, 'landingClick');
+    renderMovies('l-anim', movies.anim.slice(0, 8), 'landingClick'); // Animasiyadan ilk 8-i
+  }
+
+
+  // DASHBOARD
+  // Dashboard-ın bütün film sıralarını doldurur
+  function buildDashboard() {
+    renderMovies('d-week',  movies.week,     'openTicket');
+    renderMovies('d-anim',  movies.anim,     'openTicket');
+    renderMovies('d-class', movies.classics, 'openTicket');
+    renderMovies('d-drama', movies.drama,    'openTicket');
+  }
+
+  // Modal idarəetməsi (Giriş/Qeydiyyat)
+  function openModal(tab) {
+    document.getElementById('auth-modal').classList.add('open');
+    document.body.style.overflow = 'hidden'; // Arxa planın sürüşməsini bağla
+    switchTab(tab);
+    clearErrors();
+  }
+
+  // Modalı bağlayır 
+  function closeModal() {
+    document.getElementById('auth-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Modal arxa planına klik 
+  function backdropClick(e) {
+    if (e.target === document.getElementById('auth-modal')) closeModal();
+  }
+
+  // Tablar arasında keçid — formaları göstərir/gizləyir, başlığı dəyişir
+  function switchTab(tab) {
+    const isLogin = tab === 'login';
+    document.getElementById('tab-login').className = 'tab' + (isLogin ? ' active' : '');
+    document.getElementById('tab-reg').className   = 'tab' + (isLogin ? '' : ' active');
+    document.getElementById('form-login').className = 'form' + (isLogin ? ' active' : '');
+    document.getElementById('form-reg').className   = 'form' + (isLogin ? '' : ' active');
+    document.getElementById('modal-subtitle').textContent =
+      isLogin ? 'Hesabiniza daxil olun' : 'Yeni hesab yaradin';
+    clearErrors();
+  }
+
+  // Xəta mesajını göstər
+  function showError(id, msg) {
+    const el = document.getElementById(id);
+    el.textContent = msg;
+    el.classList.add('show');
+  }
+
+  // Bütün xəta mesajlarını gizlət
+  function clearErrors() {
+    document.getElementById('login-err').classList.remove('show');
+    document.getElementById('reg-err').classList.remove('show');
+  }
+
+  // E-poçt formatını yoxlayır
+  function isValidEmail(e) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(e);
+  }
+
+  // GİRİŞ VƏ QEYDİYYAT
+  // Giriş formasını doğrulayır, API-yə göndərir, dashboard-a keçir
+  async function doLogin() {
+    const email = document.getElementById('l-email').value.trim();
+    const pass  = document.getElementById('l-pass').value;
+
+    // İstifadəşi doğrulaması
+    if (!email || !pass)      { showError('login-err', 'Butun saheleri doldurun.'); return; }
+    if (!isValidEmail(email)) { showError('login-err', 'Email formati duzgun deyil.'); return; }
+
+    try {
+      // API-yə POST sorğusu — JSON formatında
+      const res  = await fetch(API + '/login', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email, password: pass }) });
+      const data = await res.json();
+
+      // Server xətası — mesajı göstər
+      if (data.error) { showError('login-err', data.error); return; }
+
+      // Uğurlu giriş — istifadəçini saxla, dashboard-a get
+      currentUser = data.user;
+      closeModal();
+      enterDashboard();
+    } catch(e) {
+      // Şəbəkə xətası
+      showError('login-err', 'Server ile elaqe yoxdur.');
+    }
+  }
+
+  // Qeydiyyat formasını doğrulayır, API-yə göndərir, girişə yönləndirir
+  async function doRegister() {
+    const name    = document.getElementById('r-name').value.trim();
+    const surname = document.getElementById('r-surname').value.trim();
+    const email   = document.getElementById('r-email').value.trim();
+    const pass    = document.getElementById('r-pass').value;
+    const pass2   = document.getElementById('r-pass2').value;
+
+    // İstifadəçi doğrulamaları
+    if (!name || !surname || !email || !pass || !pass2) { showError('reg-err', 'Butun saheleri doldurun.'); return; }
+    if (!isValidEmail(email))  { showError('reg-err', 'Email formati duzgun deyil.'); return; }
+    if (pass.length < 8)       { showError('reg-err', 'Sifre en az 8 simvol olmalidir.'); return; }
+    if (pass !== pass2)        { showError('reg-err', 'Sifreler uygun deyil.'); return; }
+
+    try {
+      const res  = await fetch(API + '/register', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ name, surname, email, password: pass }) });
+      const data = await res.json();
+      if (data.error) { showError('reg-err', data.error); return; }
+
+      // Uğurlu qeydiyyat — giriş formasına keçir, e-poçtu avtomatik doldurur
+      toast('Qeydiyyat tamamlandi! Daxil olun.');
+      switchTab('login');
+      document.getElementById('l-email').value = email;
+    } catch(e) { showError('reg-err', 'Server ile elaqe yoxdur.'); }
+  }
+
+  // DASHBOARD KEÇİDİ
+  // Dashboard-a keçid — landing gizlənir, dashboard görünür
+  function enterDashboard() {
+    document.getElementById('landing').classList.add('hidden');
+    document.getElementById('dashboard').classList.add('open');
+    // İstifadəçi adını navbar-a və xoş gəldiniz başlığına yaz
+    document.getElementById('welcome-name').textContent = currentUser.name;
+    document.getElementById('nav-name').textContent = currentUser.name + ' 👤';
+    buildDashboard(); // Film sıralarını doldur
+    toast('Xos geldiniz, ' + currentUser.name + '!');
+    window.scrollTo(0, 0); // Səhifəni başa gətir
+  }
+
+  // Çıxış — istifadəçini silir, ilk səhifəyə qayıdır
+  function logout() {
+    currentUser = null;
+    document.getElementById('dashboard').classList.remove('open');
+    document.getElementById('landing').classList.remove('hidden');
+    toast('Hesabdan cixdiniz.');
+    window.scrollTo(0, 0);
+  }
+
+  // Bilet pəncərəsi
+  // Bilet pəncərəsini aç — film məlumatlarını doldurur, oturacaqları qurur
+  function openTicket(id) {
+    const film = findMovie(id);
+    if (!film) return;
+
+    // Seçim vəziyyətini sıfırla
+    selection = { filmId: id, filmName: film.name, showtime: null, seats: [] };
+
+    // Kiçik posteri filmin rəngi ilə rəngləndirmək üçün class tətbiq et
+    const poster = document.getElementById('t-poster');
+    poster.className = `ticket-mini-poster poster ${film.color}`;
+    poster.textContent = film.name;
+
+    // Film məlumatlarını doldurur
+    document.getElementById('t-name').textContent   = film.name;
+    document.getElementById('t-genre').textContent  = film.genre + ' · ' + film.year;
+    document.getElementById('t-rating').textContent = '★ ' + film.r + ' / 10';
+
+    // Seans seçimini sıfırlayır
+    document.querySelectorAll('.showtime-btn').forEach(b => b.classList.remove('selected'));
+
+    buildSeatGrid(); // Oturacaqları qurur
+    updatePrice();   // Qiyməti sıfırlayır
+    document.getElementById('ticket-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  // Bilet modalını yəni pəncərəsini bağla
+  function closeTicket() {
+    document.getElementById('ticket-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  // Bilet modalı örtüyünə klik — bağlama
+  function ticketBackdrop(e) {
+    if (e.target === document.getElementById('ticket-modal')) closeTicket();
+  }
+
+  // Oturacaqları qurur
+  // rows: A-F cərgələr, hər cərgədə 9 oturacaq
+  // taken: əvvəlcədən dolu oturacaqları göstərir
+  function buildSeatGrid() {
+    const grid = document.getElementById('seat-grid');
+    grid.innerHTML = '';
+    const rows  = ['A','B','C','D','E','F'];
+    const taken = ['A3','A7','B2','B8','C4','C5','D1','D9','E6','F3','F7'];
+
+    rows.forEach(row => {
+      const rowEl = document.createElement('div');
+      rowEl.className = 'seat-row';
+
+      for (let n = 1; n <= 9; n++) {
+        const seatId = row + n; // Məsələn: 'A1', 'B5'
+        const seat = document.createElement('div');
+        seat.className = 'seat ' + (taken.includes(seatId) ? 'taken' : 'empty');
+        seat.dataset.id = seatId;
+
+        // Dolu deyilsə klik hadisəsi əlavə et
+        if (!taken.includes(seatId)) seat.onclick = () => toggleSeat(seat, seatId);
+        rowEl.appendChild(seat);
+      }
+      grid.appendChild(rowEl);
+    });
+  }
+
+  // Oturacağı seç və ya seçimi ləğv et
+  function toggleSeat(el, id) {
+    if (el.classList.contains('picked')) {
+      // Seçilmişdən boşa çevir, siyahıdan sil
+      el.classList.replace('picked', 'empty');
+      selection.seats = selection.seats.filter(s => s !== id);
+    } else {
+      // oturacaq boşdursa onu seçilmiş vəziyyətə çevirir
+      el.classList.replace('empty', 'picked');
+      selection.seats.push(id);
+    }
+    updatePrice();
+  }
+
+  // Seans vaxtını seçir — əvvəlki seçimi silir, yenisini işarələyir
+  function pickShowtime(btn, time) {
+    document.querySelectorAll('.showtime-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selection.showtime = time;
+    updatePrice();
+  }
+
+  // Bilet Al düyməsi yalnız yer və seans seçildikdə aktiv olur
+  function updatePrice() {
+    const count = selection.seats.length;
+    document.getElementById('t-count').textContent = count;
+    document.getElementById('t-price').textContent = '₼' + (count * TICKET_PRICE).toFixed(2);
+    document.getElementById('buy-btn').disabled = !(count > 0 && selection.showtime);
+  }
+
+  // Bilet al — API-yə göndər, uğurlu olsa bir neçə saniyəlik bildirişi göstər
+  async function buyTicket() {
+    const film = findMovie(selection.filmId);
+    try {
+      const res  = await fetch(API + '/tickets', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          user_id:    currentUser.id,
+          movie_name: selection.filmName,
+          showtime:   selection.showtime,
+          seats:      selection.seats,
+          total:      selection.seats.length * TICKET_PRICE
+        })
+      });
+      const data = await res.json();
+      if (data.success) {
+        closeTicket();
+        toast('🎟 "' + film.name + '" — ' + selection.showtime + ' — ' + selection.seats.length + ' bilet alindi!');
+      }
+    } catch(e) { toast('Xeta bas verdi.'); }
+  }
+
+
+  // Əlaqə formları
+  function sendContact() {
+    const name    = document.getElementById('c-name').value.trim();
+    const email   = document.getElementById('c-email').value.trim();
+    const subject = document.getElementById('c-subject').value.trim();
+    const msg     = document.getElementById('c-msg').value.trim();
+    if (!name || !email || !subject || !msg) { toast('Zehmet olmasa butun saheleri doldurun.'); return; }
+    if (!isValidEmail(email)) { toast('Email formati duzgun deyil.'); return; }
+    // Formanı təmizlə
+    document.getElementById('c-name').value = '';
+    document.getElementById('c-email').value = '';
+    document.getElementById('c-subject').value = '';
+    document.getElementById('c-msg').value = '';
+    toast('Muracietiniz gonderildi!');
+  }
+
+  // Dashboard əlaqə forması istifadəçi Göndər düyməsinə basanda işə düşür
+  function sendContactDash() {
+    const name    = document.getElementById('dc-name').value.trim();
+    const email   = document.getElementById('dc-email').value.trim();
+    const subject = document.getElementById('dc-subject').value.trim();
+    const msg     = document.getElementById('dc-msg').value.trim();
+    if (!name || !email || !subject || !msg) { toast('Zehmet olmasa butun saheleri doldurun.'); return; }
+    if (!isValidEmail(email)) { toast('Email formati duzgun deyil.'); return; }
+    document.getElementById('dc-name').value = '';
+    document.getElementById('dc-email').value = '';
+    document.getElementById('dc-subject').value = '';
+    document.getElementById('dc-msg').value = '';
+    toast('Muracietiniz gonderildi!');
+  }
+
+  // Bir neçə saniyəlik görünən bildirişlər
+  // 3.2 saniyədən sonra avtomatik gizlənir
+  // clearTimeout — əvvəlki taymeri ləğv et 
+  function toast(msg) {
+    const el = document.getElementById('toast');
+    el.textContent = msg;
+    el.classList.add('show');
+    clearTimeout(el._t);
+    el._t = setTimeout(() => el.classList.remove('show'), 3200);
+  }
+
+  // Klaviatura qısa yolları 
+  document.addEventListener('keydown', e => {
+    // ESC düyməsi açıq olanda pəncərəni bağlayır
+    if (e.key === 'Escape') { closeTicket(); closeModal(); }
+
+    // Enter düyməsinə basanda hansı pəncərə açıqdısa onu göstərir
+    if (e.key === 'Enter' && document.getElementById('auth-modal').classList.contains('open')) {
+      if (document.getElementById('form-login').classList.contains('active')) doLogin();
+      else doRegister();
+    }
+  });
+
+  // Başlanğıc səhifə yəni səhifəyə girəndə ilk görünən hissə
+  buildLanding();
+</script>
+</body>
+</html>
